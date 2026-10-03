@@ -1,0 +1,34 @@
+# disscube-benchmark / terrame_fill — TerraME "mode" fill (Itaituba, Pará)
+#
+# Same cellular space and deforestation raster as itaituba.toml, for the single operation
+#
+#     TerraME  fill{operation = "mode"}      DisSCube  operator = "majority"
+#
+# TerraME's "mode" is the most common class among the pixels of a cell; on a tie it lists all
+# the tied classes ("7,87"), while DisSCube keeps the smallest class value. compare.py accepts
+# a tie cell when DisSCube's class is one of the listed ones (see majority.compare.toml).
+#
+#     disscube validate majority.toml
+#     disscube run majority.toml --workspace data/majority
+
+schema = 1
+name = "TerraME Fill tutorial — Itaituba, mode/majority (parity case)"
+
+[grid]
+name = "itaituba_5km"
+crs = "EPSG:29191"
+bbox = [547177.3501989994, 9485214.18712, 702177.3501989994, 9585214.18712]
+resolution = 5000
+
+[[source]]
+id = "deforestation"
+type = "file"
+path = "terrame_fill/itaituba-deforestation.tif"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-deforestation.tif"
+sha256 = "b31c9b9cf492e56609a859fa82566066aec34f51c977c922f341f1ef1be5dbf6"
+
+[[derive]]
+target = "defor_mode"
+source = "deforestation"
+operator = "majority"

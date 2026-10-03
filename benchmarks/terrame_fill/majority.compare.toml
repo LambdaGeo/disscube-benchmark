@@ -1,0 +1,22 @@
+# Comparison spec for the TerraME "mode" case: DisSCube vs the luccme-goldens fill reference.
+#
+#   kind = "categorical"   -> class values, not measurements. The golden column is text: one class
+#                             ("7") or, on a tie, every tied class ("7,87"). A cell agrees when
+#                             DisSCube's class is among the golden ones. The criterion is
+#                             min_share (share of agreeing cells); no error metrics are computed.
+
+[dataset]
+name      = "majority"
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/majority_terrame.csv"
+reference_sha256 = "TODO"   # sha256sum goldens/fill/majority_terrame.csv, after `make run-fill FILL=majority`
+grid      = "itaituba_5km"
+crs       = "EPSG:29191"
+
+[[compare]]
+variable  = "defor_mode"
+reference = "defor_mode"
+kind      = "categorical"
+min_share = 0.98            # provisional: set it from the first run against the golden
+nan_ref   = 0.0             # cells without source pixels: NaN in DisSCube, `missing` (0) in TerraME
+expect    = "match"
+note      = "mode / majority: predominant class per cell; TerraME lists all tied classes, DisSCube takes the smallest"

@@ -10,6 +10,10 @@ works for references that keep only a subset of the rectangle (``input = "limit"
 Exit status is 1 if any comparison marked ``expect = "match"`` fails its criterion: a maximum
 absolute error (``max_abs_error``) and/or a share of cells within a tolerance (``tol`` and
 ``min_share``).
+
+``kind = "categorical"`` compares class values instead of measurements (TerraME's ``mode``): the
+reference column is text, one class or, on a tie, every tied class separated by comma; a cell agrees
+when DisSCube's class is one of them. Only ``min_share`` (share of agreeing cells) applies.
 """
 from __future__ import annotations
 
@@ -37,6 +41,9 @@ def _load_reference(ds: dict) -> pd.DataFrame:
     import pooch
 
     want = ds["reference_sha256"]
+    if not want or want.upper() == "TODO":
+        raise SystemExit(f"{ds['name']}: reference_sha256 is not set; generate the golden and put "
+                         "`sha256sum goldens/fill/<name>_terrame.csv` in the compare.toml")
     local = os.environ.get("LUCCME_GOLDENS_DIR")
     if local:
         path = Path(local) / "goldens" / "fill" / f"{ds['name']}_terrame.csv"
@@ -84,6 +91,38 @@ def _metrics(ours: np.ndarray, theirs: np.ndarray, tol: float | None = None, nan
     return m
 
 
+def _classes(cell) -> set[float]:
+    """Classes listed in one cell of a TerraME ``mode`` column: ``7`` -> {7}, ``"7,87"`` -> {7, 87}."""
+    return {float(v) for v in str(cell).split(",") if v.strip()}
+
+
+def _categorical(ours: np.ndarray, theirs, nan_ref: float | None = None) -> dict:
+    """Agreement of DisSCube's class with TerraME's ``mode`` (which lists every tied class).
+
+    A cell agrees when DisSCube's value is among the classes TerraME lists. Cells without source
+    pixels (NaN in DisSCube) are left out and, with ``nan_ref``, checked against TerraME's ``missing``.
+    ``exact_share`` is the agreement over the cells with a single class; ``tie_cells``/``tie_share``
+    describe the cells where TerraME lists more than one.
+    """
+    sets = [_classes(t) for t in theirs]
+    nan = np.isnan(ours)
+    m: dict = {"nan_cells": int(nan.sum() if nan_ref is not None else 0)}
+    if nan_ref is not None:
+        m["nan_ok"] = all(sets[i] == {nan_ref} for i in np.flatnonzero(nan))
+    ok = np.flatnonzero(~nan) if nan_ref is not None else np.arange(len(ours))
+    agree = np.array([ours[i] in sets[i] for i in ok])
+    tie = np.array([len(sets[i]) > 1 for i in ok])
+    nan_ = float("nan")
+    m.update(
+        n=int(len(ok)), mean_abs_error=nan_, max_abs_error=nan_, bias=nan_, pearson_r=nan_,
+        share=float(agree.mean()),
+        exact_share=float(agree[~tie].mean()) if (~tie).any() else None,
+        tie_cells=int(tie.sum()),
+        tie_share=float(agree[tie].mean()) if tie.any() else None,
+    )
+    return m
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("spec", type=Path, help="<dataset>.compare.toml")
@@ -100,6 +139,15 @@ def main() -> int:
     results = []
     for c in spec.get("compare", []):
         da = cube.load(c["variable"], grid_id=ds["grid"])
+        if c.get("kind") == "categorical":
+            ours = da.to_numpy()[rows, cols]
+            m = _categorical(ours, ref[c["reference"]].to_numpy(), c.get("nan_ref"))
+            m.update(label=c.get("label", c["variable"]), expect=c["expect"], limit=None, tol=None,
+                     min_share=c.get("min_share"), note=c.get("note", ""), kind="categorical")
+            m["passed"] = (all([m["share"] >= m["min_share"]] + ([m["nan_ok"]] if "nan_ok" in m else []))
+                           if c["expect"] == "match" else None)
+            results.append(m)
+            continue
         if c.get("purity"):
             da = da * da.coords["coverage_purity"]
         ours = da.to_numpy()[rows, cols] * c.get("scale", 1.0)
@@ -146,15 +194,19 @@ def _rows(report: dict):
     for r in report["comparisons"]:
         status = {True: "match", False: "FAIL", None: "differs"}[r["passed"]]
         crit = []
+        cat = r.get("kind") == "categorical"
         if r["limit"] is not None:
             crit.append(f"max <= {r['limit']:g}")
         if r["min_share"] is not None:
-            crit.append(f">= {r['min_share']:.1%} within {r['tol']:g}")
+            crit.append(f">= {r['min_share']:.1%} agree" if cat else f">= {r['min_share']:.1%} within {r['tol']:g}")
         share = f"{r['share']:.1%}" if r["share"] is not None else "-"
-        if r["share"] is not None and r["tol"] is not None:
+        if cat:
+            share += " agree"
+        elif r["share"] is not None and r["tol"] is not None:
             share += f" (<= {r['tol']:g})"
-        yield (r["label"], r["n"], f"{r['mean_abs_error']:.3g}", f"{r['max_abs_error']:.3g}",
-               f"{r['bias']:+.3g}", f"{r['pearson_r']:.4f}", share, "; ".join(crit) or "-", status)
+        num = lambda v, f: "-" if v != v else format(v, f)  # NaN -> "-" (categorical has no error metrics)
+        yield (r["label"], r["n"], num(r["mean_abs_error"], ".3g"), num(r["max_abs_error"], ".3g"),
+               num(r["bias"], "+.3g"), num(r["pearson_r"], ".4f"), share, "; ".join(crit) or "-", status)
 
 
 HEAD = ("variable", "cells", "mean |err|", "max |err|", "bias", "r", "within tol", "criterion", "status")
@@ -172,6 +224,12 @@ def _print(report: dict) -> None:
         if r["nan_cells"]:
             print(f"\n{r['label']}: {r['nan_cells']} cells without source pixels are NaN in DisSCube; "
                   f"TerraME's value there is the expected one: {r['nan_ok']}")
+    for r in report["comparisons"]:
+        if r.get("kind") == "categorical":
+            ex = f"{r['exact_share']:.1%}" if r["exact_share"] is not None else "-"
+            ti = f"{r['tie_share']:.1%}" if r["tie_share"] is not None else "-"
+            print(f"\n{r['label']}: single-class cells agree in {ex}; "
+                  f"{r['tie_cells']} tie cells (TerraME lists several classes), DisSCube's is one of them in {ti}")
     for u in report["unsupported"]:
         print(f"\nnot supported: {u['reference']} — {u['note']}")
 

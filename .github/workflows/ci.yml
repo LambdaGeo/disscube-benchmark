@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dataset: [itaituba, emas, amazonia]
+        dataset: [itaituba, emas, amazonia, majority]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

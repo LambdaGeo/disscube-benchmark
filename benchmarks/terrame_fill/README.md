@@ -9,13 +9,14 @@ release `v1.0.0`, Zenodo DOI 10.5281/zenodo.23107748).
 |---|---|---|---|
 | `itaituba` | 31 × 20 cells, 5 km, EPSG:29191 | `average`, `coverage`, `distance`, `sum (area)` | `mean`, `percentage`, `distance`, `sum` (`area = true`) |
 | `amazonia` | 2 229 cells, 50 km, EPSG:29191 | `coverage`, `distance`, `area` | `percentage`, `distance`, `area` |
+| `majority` | 620 cells, 5 km, EPSG:29191 | `mode` (deforestation raster) | `majority` |
 | `emas` | 5 514 cells, 500 m, EPSG:29192 | `presence`, `maximum`, `minimum` | `presence`, `max`, `min` |
 
 ## Run
 
 ```bash
 pip install -r ../../requirements.txt
-./run.sh all itaituba          # or: emas, amazonia  (run = derive, compare = check, all = both)
+./run.sh all itaituba          # or: emas, amazonia, majority  (run = derive, compare = check, all = both)
 ```
 
 `run` downloads TerraME's own `gis` package data from
@@ -37,6 +38,7 @@ run.sh                   run | compare | all
 
 - `expect = "match"`: has a criterion, `max_abs_error` and/or `min_share` at tolerance `tol`; the run fails if it is not met.
 - `expect = "differs"`: reported only (no pass/fail). None at the moment.
+- `kind = "categorical"`: class values (TerraME `mode`). The golden column is text: one class or, on a tie, every tied class separated by comma (`"7,87"`); a cell agrees when DisSCube's class is among them. Criterion: `min_share`.
 - `[[unsupported]]`: TerraME operation with no DisSCube operator yet. None at the moment.
 
 Cells are matched by centre coordinates (`cx`, `cy`), not by row number: TerraME numbers rows from the
