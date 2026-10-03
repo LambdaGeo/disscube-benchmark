@@ -1,0 +1,15 @@
+# Core Data Cube Engine.
+# The terrame_fill suite needs `sum` with `params = {area = true}` (Itaituba population), which is in
+# the DisSCube main branch (CHANGELOG "Unreleased") and not yet on PyPI (latest there: 0.4.0).
+# Pinned to the commit the results were produced with; switch to `disscube>=0.5.0,<0.6` once released.
+disscube @ git+https://github.com/DisSModel/disscube.git@cef6ee2a343c8b2d6253568d111e2099a3a8167f
+
+# Geospatial analysis and data retrieval
+rasterio>=1.3.0
+geopandas>=0.14.0
+pooch>=1.8.0
+numpy>=1.24.0
+pandas>=2.0.0
+shapely>=2.0.0
+scipy>=1.10.0
+tabulate>=0.9.0

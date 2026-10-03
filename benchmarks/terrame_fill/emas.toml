@@ -1,0 +1,124 @@
+# disscube-benchmark / terrame_fill — TerraME "Fill" example Emas (Parque Nacional das Emas)
+#
+# The same cellular space and layers as terrame/emas.lua, declared for DisSCube. Inputs are
+# TerraME's own `gis` package data (LGPL, INPE/TerraLAB) fetched from github.com/TerraME/terrame
+# (commit 84faddc) and SHA-256-verified; a shapefile's .shx/.dbf/.prj are declared as extra
+# sources (`<id>_shx` ...) so DisSCube downloads them next to the .shp.
+#
+#     disscube validate emas.toml
+#     disscube run emas.toml --workspace data/emas
+#
+# TerraME                                     DisSCube
+# fill{operation = "presence"}                operator = "presence"
+# fill{operation = "maximum"}                 operator = "max"
+# fill{operation = "minimum"}                 operator = "min"
+
+schema = 1
+name = "TerraME Fill example — Emas (parity case)"
+
+# Same grid as TerraME: 500 m cells over the bounds of its cells layer (SAD69 / UTM 22S).
+# TerraME built it with input = "limit", so its 5 514 cells are a subset of this rectangle
+# (cells touching the park limit); cells are matched by centre in compare.py.
+[grid]
+name = "emas_500m"
+crs = "EPSG:29192"
+bbox = [275773.531595, 7970379.191738276, 316273.531595, 8024379.191738276]
+resolution = 500
+
+[[source]]
+id = "cover"
+type = "file"
+path = "terrame_fill/emas-accumulation.tif"
+crs = "EPSG:29192"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-accumulation.tif"
+sha256 = "d3ef918861c36c46a7333d79346dbb54a3e48b80468787715ddd5ef317e2e58a"
+
+[[source]]
+id = "firebreak"
+type = "file"
+path = "terrame_fill/emas-firebreak.shp"
+crs = "EPSG:29192"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-firebreak.shp"
+sha256 = "cc371dfec5f259c885e4ccacd2146e3eece446e8ad77fa7181021c2df9c5c83c"
+
+[[source]]
+id = "firebreak_shx"
+type = "file"
+path = "terrame_fill/emas-firebreak.shx"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-firebreak.shx"
+sha256 = "e698ef8b58652df61b4ff3e116b7953f1caeba59acd308bd02a42fba808704c4"
+
+[[source]]
+id = "firebreak_dbf"
+type = "file"
+path = "terrame_fill/emas-firebreak.dbf"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-firebreak.dbf"
+sha256 = "3f230ca1ed5edf7c0c9740dce9f39ff6d1447592cea2adcc762f274517ee413a"
+
+[[source]]
+id = "firebreak_prj"
+type = "file"
+path = "terrame_fill/emas-firebreak.prj"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-firebreak.prj"
+sha256 = "2a769fadf39e6c40da047e46399c60b15ca9a8e0c87bbcf9d74ed9ba390cb205"
+
+[[source]]
+id = "river"
+type = "file"
+path = "terrame_fill/emas-river.shp"
+crs = "EPSG:29192"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-river.shp"
+sha256 = "9cdadc7d8fd9428141d484ab68aa68a42123b63eb0ff3a96acd78c6dde3a6650"
+
+[[source]]
+id = "river_shx"
+type = "file"
+path = "terrame_fill/emas-river.shx"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-river.shx"
+sha256 = "d9075a886e60bfd45dafbdd848cde28e9ddd8408ba9bc5ca9e715b94a50b4b04"
+
+[[source]]
+id = "river_dbf"
+type = "file"
+path = "terrame_fill/emas-river.dbf"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-river.dbf"
+sha256 = "eba5fd5597d1a2c19c1c6aaedd4a269fd87d70de99f2e229f11fbedcf30ac58b"
+
+[[source]]
+id = "river_prj"
+type = "file"
+path = "terrame_fill/emas-river.prj"
+crs = "EPSG:29192"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/emas-river.prj"
+sha256 = "2a769fadf39e6c40da047e46399c60b15ca9a8e0c87bbcf9d74ed9ba390cb205"
+
+[[derive]]
+target = "firebreak"
+source = "firebreak"
+operator = "presence"
+
+[[derive]]
+target = "river"
+source = "river"
+operator = "presence"
+
+[[derive]]
+target = "maxcover"
+source = "cover"
+operator = "max"
+
+[[derive]]
+target = "mincover"
+source = "cover"
+operator = "min"

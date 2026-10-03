@@ -1,0 +1,49 @@
+# Amazônia (50 km, 2 229 cells). TerraME kept only the cells touching the study-area limit, so cells
+# are matched by centre. Coverage is the DisSCube `percentage` fraction (0-1), as stored in the goldens.
+
+[dataset]
+name      = "amazonia"
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/amazonia_terrame.csv"
+reference_sha256 = "2203306cfd68b6c43fc6d06dc0cfc6ee3e9445e6e8e00fc476b56b07255620fa"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+grid      = "amazonia_50km"
+crs       = "EPSG:29191"
+
+[[compare]]
+variable = "prodes_10"
+reference = "prodes_10"
+nan_ref = 0.0                   # cells without any PRODES pixel: NaN in DisSCube, 0 in TerraME
+max_abs_error = 1e-4            # fraction (~5e-11 measured: identical)
+expect = "match"
+note = "coverage; identical to TerraME (same valid-pixel denominator)"
+
+[[compare]]
+variable = "prodes_208"
+reference = "prodes_208"
+nan_ref = 0.0
+max_abs_error = 1e-4
+expect = "match"
+note = "coverage, as above"
+
+[[compare]]
+variable = "protected"
+reference = "protected"
+tol = 0.01
+min_share = 0.99
+expect = "match"
+note = "area: intersection area / cell area with overlapping polygons counted once; TerraME's `area` is the same quantity"
+
+[[compare]]
+variable = "distroads"
+reference = "distroads"
+tol = 100                     # m
+min_share = 0.78              # 79.2 % within 100 m measured
+expect = "match"
+note = "distance (lines): TerraME measures to the nearest vertex, DisSCube to the segment; the gap grows where vertices are sparse (50 km cells)"
+
+[[compare]]
+variable = "distports"
+reference = "distports"
+tol = 1                       # m
+min_share = 1.0               # 100 % within 1 m measured (max 5e-4 m)
+expect = "match"
+note = "distance (points): points are vertices, so both tools agree exactly"

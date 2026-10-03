@@ -1,0 +1,41 @@
+# Emas (500 m, 5 514 cells). TerraME kept only the cells touching the park limit, so cells are
+# matched by centre. Presence and min/max are compared as the share of cells with the same value.
+
+[dataset]
+name      = "emas"
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/emas_terrame.csv"
+reference_sha256 = "332a762b2d9444ffbdd22acdf6406feff22dbb005f129fa5de1efdda930e3939"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+grid      = "emas_500m"
+crs       = "EPSG:29192"
+
+[[compare]]
+variable = "firebreak"
+reference = "firebreak"
+tol = 0
+min_share = 0.98                # 98.4 % measured
+expect = "match"
+note = "presence: DisSCube rasterizes lines through cell centres, TerraME marks every cell a line touches"
+
+[[compare]]
+variable = "river"
+reference = "river"
+tol = 0
+min_share = 0.98                # 99.7 % measured
+expect = "match"
+note = "presence, as above"
+
+[[compare]]
+variable = "maxcover"
+reference = "maxcover"
+tol = 0
+min_share = 0.985               # 98.7 % measured
+expect = "match"
+note = "max: pixels straddling a cell border count for both cells in DisSCube; TerraME assigns each pixel to the cell holding its centre"
+
+[[compare]]
+variable = "mincover"
+reference = "mincover"
+tol = 0
+min_share = 0.985               # 99.0 % measured
+expect = "match"
+note = "min, as above"

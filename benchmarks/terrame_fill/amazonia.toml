@@ -1,0 +1,166 @@
+# disscube-benchmark / terrame_fill — TerraME "Fill" example Amazônia
+#
+# The same cellular space and layers as terrame/amazonia.lua, declared for DisSCube. Inputs are
+# TerraME's own `gis` package data (LGPL, INPE/TerraLAB) fetched from github.com/TerraME/terrame
+# (commit 84faddc) and SHA-256-verified; a shapefile's .shx/.dbf/.prj are declared as extra
+# sources (`<id>_shx` ...) so DisSCube downloads them next to the .shp.
+#
+#     disscube validate amazonia.toml
+#     disscube run amazonia.toml --workspace data/amazonia
+#
+# TerraME                                     DisSCube
+# fill{operation = "coverage"}                operator = "percentage"
+# fill{operation = "distance"}                operator = "distance"
+# fill{operation = "area"}                    operator = "area"
+
+schema = 1
+name = "TerraME Fill example — Amazônia (parity case)"
+
+# Same grid as TerraME: 50 km cells over the bounds of its cells layer (SAD69 / UTM 21S).
+# TerraME built it with input = "limit", so its 2 229 cells are a subset of this rectangle;
+# cells are matched by centre in compare.py.
+[grid]
+name = "amazonia_50km"
+crs = "EPSG:29191"
+bbox = [-2205525.420188459, -1995806.6413792633, 1394474.579811541, 604193.3586207367]
+resolution = 50000
+
+[[source]]
+id = "prodes"
+type = "file"
+path = "terrame_fill/amazonia-prodes.tif"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-prodes.tif"
+sha256 = "28fef2ada04460ce05abf1ce40582cf08c928e6bc766610473c5ff7968ab365a"
+
+[[source]]
+id = "roads"
+type = "file"
+path = "terrame_fill/amazonia-roads.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-roads.shp"
+sha256 = "9110a1c2c7732b16e3e6e4f82feafac62ed2039e4450c206d0323c284ccf8e78"
+
+[[source]]
+id = "roads_shx"
+type = "file"
+path = "terrame_fill/amazonia-roads.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-roads.shx"
+sha256 = "52051b878f78c2c30ddff6505466008c167d5ef542e52ff11aee283e84101072"
+
+[[source]]
+id = "roads_dbf"
+type = "file"
+path = "terrame_fill/amazonia-roads.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-roads.dbf"
+sha256 = "0fe0bfe8316f9fa539d0205944c8a1dfbb122aa049a50f1e62876b6d82861c8b"
+
+[[source]]
+id = "roads_prj"
+type = "file"
+path = "terrame_fill/amazonia-roads.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-roads.prj"
+sha256 = "9325abce57d4f6e2adee04916beea7581c00c5208f0ad70251157743a9540903"
+
+[[source]]
+id = "ports"
+type = "file"
+path = "terrame_fill/amazonia-ports.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-ports.shp"
+sha256 = "7eea0b60599b2eda9bd256495a58dfc9350cb45f51395282e78bbf0391144050"
+
+[[source]]
+id = "ports_shx"
+type = "file"
+path = "terrame_fill/amazonia-ports.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-ports.shx"
+sha256 = "3994118b995ab2458fe45c5f414a8ca18592503d938a052e4b36da7627e462d2"
+
+[[source]]
+id = "ports_dbf"
+type = "file"
+path = "terrame_fill/amazonia-ports.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-ports.dbf"
+sha256 = "7c49c1ca9088f2ae7e0f8cb64c68b979fb049bfb42a67a518a02df6d4d1c3520"
+
+[[source]]
+id = "ports_prj"
+type = "file"
+path = "terrame_fill/amazonia-ports.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-ports.prj"
+sha256 = "9325abce57d4f6e2adee04916beea7581c00c5208f0ad70251157743a9540903"
+
+[[source]]
+id = "indigenous"
+type = "file"
+path = "terrame_fill/amazonia-indigenous.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-indigenous.shp"
+sha256 = "5a1276dc49a4cb9900761d44926f6b3546bb0801b669d5b92c0dce6f17e2fc01"
+
+[[source]]
+id = "indigenous_shx"
+type = "file"
+path = "terrame_fill/amazonia-indigenous.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-indigenous.shx"
+sha256 = "c66b513ffc2e98bf3a0429d39726d4e6a05baa559d26377c742f2c7693b4b6b9"
+
+[[source]]
+id = "indigenous_dbf"
+type = "file"
+path = "terrame_fill/amazonia-indigenous.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-indigenous.dbf"
+sha256 = "c38babcfdd3ddc0c067a428799e4cd526d2bd633f2624a56af7de32b8e774a9c"
+
+[[source]]
+id = "indigenous_prj"
+type = "file"
+path = "terrame_fill/amazonia-indigenous.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/amazonia-indigenous.prj"
+sha256 = "1afde205aa56b4e4c75a4dbdeb33cf10128bb5ddd8709520eea4f50e3119da9a"
+
+[[derive]]
+target = "prodes_10"
+source = "prodes"
+operator = "percentage"
+class_code = 10
+
+[[derive]]
+target = "prodes_208"
+source = "prodes"
+operator = "percentage"
+class_code = 208
+
+[[derive]]
+target = "distroads"
+source = "roads"
+operator = "distance"
+
+[[derive]]
+target = "distports"
+source = "ports"
+operator = "distance"
+
+[[derive]]
+target = "protected"
+source = "indigenous"
+operator = "area"

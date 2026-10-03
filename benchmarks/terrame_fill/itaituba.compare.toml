@@ -1,0 +1,70 @@
+# What is compared for Itaituba, and what each comparison is expected to show.
+#   expect = "match"  -> the run fails if max |error| exceeds `max_abs_error` (thresholds
+#                        are the parity reached by DisSCube (main, commit cef6ee2) against luccme-goldens v1.0.0, plus a small margin)
+#   expect = "differs"-> reported only, no pass/fail (none at the moment)
+# Values are compared in TerraME units; coverage is the DisSCube `percentage` fraction (0-1), as stored in the goldens.
+
+[dataset]
+name      = "itaituba"
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/itaituba_terrame.csv"
+reference_sha256 = "36b7648881b231eeee9e86aede6d22791215786c8bf05a5b38fe19101989d6fb"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+grid      = "itaituba_5km"
+crs       = "EPSG:29191"
+
+[[compare]]
+variable = "elevation"
+reference = "elevation"
+expect = "match"
+max_abs_error = 11.0            # m   (10.13 measured)
+note = "TerraME average vs DisSCube mean (area-weighted resampling of a 923 m raster)"
+
+[[compare]]
+variable = "defor_7"
+reference = "defor_7"
+expect = "match"
+max_abs_error = 0.01             # fraction (0.0064 measured)
+note = "coverage; same valid-pixel denominator in both"
+
+[[compare]]
+variable = "defor_87"
+reference = "defor_87"
+expect = "match"
+max_abs_error = 0.01
+note = "coverage"
+
+[[compare]]
+variable = "defor_167"
+reference = "defor_167"
+expect = "match"
+max_abs_error = 0.01
+note = "coverage"
+
+[[compare]]
+variable = "defor_255"
+reference = "defor_255"
+expect = "match"
+max_abs_error = 0.01
+note = "coverage"
+
+[[compare]]
+variable = "distroad"
+reference = "distroad"
+tol = 100                     # m
+min_share = 0.94              # 94.5 % within 100 m measured (73.7 % within 1 m)
+expect = "match"
+note = "distance (lines): TerraME measures to the nearest vertex, DisSCube to the segment, so it is never larger"
+
+[[compare]]
+variable = "distlocal"
+reference = "distlocal"
+tol = 1                       # m
+min_share = 1.0               # 100 % within 1 m measured (max 5e-6 m)
+expect = "match"
+note = "distance (points): points are vertices, so both tools agree exactly"
+
+[[compare]]
+variable = "population"
+reference = "population"
+expect = "match"
+max_abs_error = 1e-5            # 3.8e-7 measured
+note = "sum with area = true: census population shared by intersected area (total conserved)"

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Declarative Pipelines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Validate pipelines
+        run: |
+          shopt -s nullglob
+          n=0
+          for f in benchmarks/terrame_fill/*.toml; do
+            case "$f" in *.compare.toml) continue ;; esac
+            echo "::group::disscube validate $f"
+            disscube validate "$f"
+            echo "::endgroup::"
+            n=$((n + 1))
+          done
+          echo "$n pipelines validated"
+          test "$n" -gt 0
+
+  terrame-fill-benchmark:
+    name: Benchmark vs TerraME Fill Goldens
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dataset: [itaituba, emas, amazonia]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Cache downloaded inputs (SHA-256 verified)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/disscube
+          key: terrame-fill-${{ hashFiles('benchmarks/terrame_fill/*.toml') }}
+      - name: Run DisSCube pipeline and compare with goldens
+        working-directory: benchmarks/terrame_fill
+        run: ./run.sh all ${{ matrix.dataset }}
+      - name: Publish Job Summary
+        if: always()
+        run: cat benchmarks/terrame_fill/reports/${{ matrix.dataset }}/report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload Benchmark Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-report-${{ matrix.dataset }}
+          path: benchmarks/terrame_fill/reports/${{ matrix.dataset }}/

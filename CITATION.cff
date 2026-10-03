@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this benchmark suite, please cite it as below."
+type: software
+title: "disscube-benchmark: Quantitative Numerical and Spatial Parity Benchmark for DisSCube against Canonical TerraME Goldens"
+abstract: "Automated benchmarking suite and continuous integration harness measuring cell-by-cell numerical parity, spatial metrics, and residual divergence between declarative data cube operators in DisSCube and canonical TerraME 2.0.1 goldens."
+version: 0.1.0
+date-released: 2026-10-02
+license: MIT
+url: "https://github.com/LambdaGeo/disscube-benchmark"
+repository-code: "https://github.com/LambdaGeo/disscube-benchmark"
+keywords:
+  - "spatial data cubes"
+  - "benchmarking"
+  - "reproducibility"
+  - "numerical parity"
+  - "TerraME"
+  - "LuccME"
+  - "DisSCube"
+  - "open science"
+authors:
+  - family-names: Costa
+    given-names: Sérgio Souza
+    affiliation: "Universidade Federal do Maranhão (UFMA)"

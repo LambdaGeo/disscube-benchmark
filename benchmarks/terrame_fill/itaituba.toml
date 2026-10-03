@@ -1,0 +1,196 @@
+# disscube-benchmark / terrame_fill — TerraME "Fill" tutorial (Itaituba, Pará)
+#
+# The same cellular space and layers as terrame/itaituba.lua, declared for DisSCube.
+# Input layers are TerraME's own `gis` package data (LGPL, INPE/TerraLAB), fetched straight
+# from github.com/TerraME/terrame (commit 84faddc) and SHA-256-verified. Nothing is stored in git.
+# A shapefile is several files upstream, so its .shx/.dbf/.prj are declared as extra sources
+# (`<id>_shx` ...); they only make DisSCube download them next to the .shp.
+#
+#     disscube validate itaituba.toml
+#     disscube run itaituba.toml --workspace data/itaituba
+#
+# TerraME                                     DisSCube
+# fill{operation = "average"}                 operator = "mean"
+# fill{operation = "coverage"}                operator = "percentage"
+# fill{operation = "distance"}                operator = "distance"
+# fill{operation = "sum", area = true}        operator = "sum", params = { area = true }
+
+schema = 1
+name = "TerraME Fill tutorial — Itaituba (parity case)"
+
+# Same grid as TerraME: 5 km cells over the bounds of the census layer.
+# TerraME's reference .prj is wrong (NAD83_Austin); the real CRS is SAD69 / UTM 21S.
+[grid]
+name = "itaituba_5km"
+crs = "EPSG:29191"
+bbox = [547177.3501989994, 9485214.18712, 702177.3501989994, 9585214.18712]
+resolution = 5000
+
+[[source]]
+id = "elevation"
+type = "file"
+path = "terrame_fill/itaituba-elevation.tif"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-elevation.tif"
+sha256 = "f9fac6f61ed6ac29c1e543c8c6cfc239148eb6b308b2bcb0ff915f42abe2879c"
+
+[[source]]
+id = "deforestation"
+type = "file"
+path = "terrame_fill/itaituba-deforestation.tif"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-deforestation.tif"
+sha256 = "b31c9b9cf492e56609a859fa82566066aec34f51c977c922f341f1ef1be5dbf6"
+
+[[source]]
+id = "roads"
+type = "file"
+path = "terrame_fill/itaituba-roads.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-roads.shp"
+sha256 = "14cd1979f5d2aa9c7a8dd8f614d0a2ccde67532f8f9c380b0e623e879435e9b9"
+
+[[source]]
+id = "roads_shx"
+type = "file"
+path = "terrame_fill/itaituba-roads.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-roads.shx"
+sha256 = "01cf0d8b25fb11b616c05e65a24f1922e1d2fee7ba7251d10aa943ca4a6a8ca7"
+
+[[source]]
+id = "roads_dbf"
+type = "file"
+path = "terrame_fill/itaituba-roads.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-roads.dbf"
+sha256 = "933ead67b0db63e9d87166b9d7c025b49c64b5af658285e3ea1ea747ba259b96"
+
+[[source]]
+id = "roads_prj"
+type = "file"
+path = "terrame_fill/itaituba-roads.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-roads.prj"
+sha256 = "373c1c6111077987ba88fe0161bd6e75bac981a1bdd0faeeddeed432bbecebe3"
+
+[[source]]
+id = "localities"
+type = "file"
+path = "terrame_fill/itaituba-localities.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-localities.shp"
+sha256 = "42fcd06013be75adbd9d23605abdd1753ac18457f74f332a59c9fe683b20a13c"
+
+[[source]]
+id = "localities_shx"
+type = "file"
+path = "terrame_fill/itaituba-localities.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-localities.shx"
+sha256 = "c1b3bc2cda56f421ceb5c680a6d2db3e603a868506542e64ec22bb1f95376a87"
+
+[[source]]
+id = "localities_dbf"
+type = "file"
+path = "terrame_fill/itaituba-localities.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-localities.dbf"
+sha256 = "ac33c3c5db1724a473989768a974be53d5eda9beb366e2341cd756be40fc4909"
+
+[[source]]
+id = "localities_prj"
+type = "file"
+path = "terrame_fill/itaituba-localities.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-localities.prj"
+sha256 = "373c1c6111077987ba88fe0161bd6e75bac981a1bdd0faeeddeed432bbecebe3"
+
+[[source]]
+id = "census"
+type = "file"
+path = "terrame_fill/itaituba-census.shp"
+crs = "EPSG:29191"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-census.shp"
+sha256 = "a513d2e75f0b3cde353b46c62c29d8a4840e4a00710a4fa7d30b9d09defdcb41"
+
+[[source]]
+id = "census_shx"
+type = "file"
+path = "terrame_fill/itaituba-census.shx"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-census.shx"
+sha256 = "711aec43e7b10e977353a2f703e5b0e63b65670578076095f13e6dc4ad9faa0c"
+
+[[source]]
+id = "census_dbf"
+type = "file"
+path = "terrame_fill/itaituba-census.dbf"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-census.dbf"
+sha256 = "6cb0e5a10b4cd66b7c576584fa8e45aabd5d1b80c39435054d0079b2554e28d7"
+
+[[source]]
+id = "census_prj"
+type = "file"
+path = "terrame_fill/itaituba-census.prj"
+crs = "EPSG:29191"
+format = "vector"
+url = "https://raw.githubusercontent.com/TerraME/terrame/84faddc4e5149a89d7486444b61b8c50474e199c/packages/gis/data/itaituba-census.prj"
+sha256 = "373c1c6111077987ba88fe0161bd6e75bac981a1bdd0faeeddeed432bbecebe3"
+
+[[derive]]
+target = "elevation"
+source = "elevation"
+operator = "mean"
+
+# TerraME's "defor" fill creates one attribute per class (defor_<code>).
+# The classes compared here are 7, 87, 167 and 255.
+[[derive]]
+target = "defor_7"
+source = "deforestation"
+operator = "percentage"
+class_code = 7
+
+[[derive]]
+target = "defor_87"
+source = "deforestation"
+operator = "percentage"
+class_code = 87
+
+[[derive]]
+target = "defor_167"
+source = "deforestation"
+operator = "percentage"
+class_code = 167
+
+[[derive]]
+target = "defor_255"
+source = "deforestation"
+operator = "percentage"
+class_code = 255
+
+[[derive]]
+target = "distroad"
+source = "roads"
+operator = "distance"
+
+[[derive]]
+target = "distlocal"
+source = "localities"
+operator = "distance"
+
+# Census tracts: population shared among the cells in proportion to the intersected area.
+[[derive]]
+target = "population"
+source = "census"
+operator = "sum"
+params = { area = true }
