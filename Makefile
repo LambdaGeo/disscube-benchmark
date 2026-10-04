@@ -3,8 +3,10 @@
 # Quantitative Numerical and Spatial Parity Benchmark for DisSCube vs TerraME Goldens
 # ==============================================================================
 
+SHELL := /bin/bash
+
 DATASET ?= itaituba
-DATASETS := itaituba amazonia emas majority
+DATASETS := itaituba amazonia emas majority connectivity
 
 .PHONY: help validate run compare benchmark benchmark-all clean
 
@@ -14,7 +16,7 @@ help:
 	@echo "  make validate               Validate all declarative pipeline TOMLs"
 	@echo "  make benchmark              Run & compare default dataset (itaituba)"
 	@echo "  make benchmark DATASET=emas Run & compare a specific dataset"
-	@echo "  make benchmark-all          Run & compare all datasets (itaituba, amazonia, emas, majority)"
+	@echo "  make benchmark-all          Run & compare all datasets (itaituba, amazonia, emas, majority, connectivity)"
 	@echo "  make run DATASET=...        Run data cube derivation without comparing"
 	@echo "  make compare DATASET=...    Run comparison against goldens (requires cube run)"
 	@echo "  make clean                  Remove generated workspaces and test reports"

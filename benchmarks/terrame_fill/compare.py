@@ -40,19 +40,29 @@ def _load_reference(ds: dict) -> pd.DataFrame:
 
     import pooch
 
-    want = ds["reference_sha256"]
+    want = ds.get("reference_sha256")
+    fname = ds.get("reference") or f"{ds['name']}_terrame.csv"
+    local = os.environ.get("LUCCME_GOLDENS_DIR")
+    if not local:
+        candidate = Path(__file__).resolve().parents[3] / "luccme-goldens"
+        if candidate.is_dir():
+            local = str(candidate)
+
+    if local:
+        path = Path(local) / "goldens" / "fill" / fname
+        if path.exists():
+            if want and want.upper() != "TODO":
+                got = hashlib.sha256(path.read_bytes()).hexdigest()
+                if got != want:
+                    raise SystemExit(f"{path}: sha256 {got} != expected {want}")
+            return pd.read_csv(path)
+
     if not want or want.upper() == "TODO":
         raise SystemExit(f"{ds['name']}: reference_sha256 is not set; generate the golden and put "
-                         "`sha256sum goldens/fill/<name>_terrame.csv` in the compare.toml")
-    local = os.environ.get("LUCCME_GOLDENS_DIR")
-    if local:
-        path = Path(local) / "goldens" / "fill" / f"{ds['name']}_terrame.csv"
-        got = hashlib.sha256(path.read_bytes()).hexdigest()
-        if got != want:
-            raise SystemExit(f"{path}: sha256 {got} != expected {want}")
-        return pd.read_csv(path)
-    path = pooch.retrieve(url=ds["reference_url"], known_hash=f"sha256:{want}",
-                          path=pooch.os_cache("disscube") / "goldens", fname=f"{ds['name']}_terrame.csv")
+                         f"`sha256sum goldens/fill/{fname}` in the compare.toml")
+    url = ds.get("reference_url") or f"https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/master/goldens/fill/{fname}"
+    path = pooch.retrieve(url=url, known_hash=f"sha256:{want}",
+                          path=pooch.os_cache("disscube") / "goldens", fname=fname)
     return pd.read_csv(path)
 
 
@@ -63,7 +73,8 @@ def _cells(cube: CubeClient, grid_id: str, ref: pd.DataFrame):
     res = grid.resolution
     cols = np.floor((ref["cx"].to_numpy() - xmin) / res).astype(int)
     rows = np.floor((ymax - ref["cy"].to_numpy()) / res).astype(int)
-    return rows, cols
+    in_bounds = (cols >= 0) & (cols < grid.cols) & (rows >= 0) & (rows < grid.rows)
+    return rows, cols, in_bounds
 
 
 def _metrics(ours: np.ndarray, theirs: np.ndarray, tol: float | None = None, nan_ref: float | None = None) -> dict:
@@ -134,14 +145,20 @@ def main() -> int:
     ds = spec["dataset"]
     ref = _load_reference(ds)
     cube = CubeClient(str(args.workspace / "catalog.db"), str(args.workspace / "store"))
-    rows, cols = _cells(cube, ds["grid"], ref)
+    rows, cols, in_bounds = _cells(cube, ds["grid"], ref)
 
     results = []
     for c in spec.get("compare", []):
         da = cube.load(c["variable"], grid_id=ds["grid"])
+        ref_vals = ref[c["reference"]].to_numpy()
+        if not in_bounds.all():
+            grid_vals = da.to_numpy()[rows[in_bounds], cols[in_bounds]]
+            ref_vals = ref_vals[in_bounds]
+        else:
+            grid_vals = da.to_numpy()[rows, cols]
         if c.get("kind") == "categorical":
-            ours = da.to_numpy()[rows, cols]
-            m = _categorical(ours, ref[c["reference"]].to_numpy(), c.get("nan_ref"))
+            ours = grid_vals
+            m = _categorical(ours, ref_vals, c.get("nan_ref"))
             m.update(label=c.get("label", c["variable"]), expect=c["expect"], limit=None, tol=None,
                      min_share=c.get("min_share"), note=c.get("note", ""), kind="categorical")
             m["passed"] = (all([m["share"] >= m["min_share"]] + ([m["nan_ok"]] if "nan_ok" in m else []))
@@ -150,8 +167,12 @@ def main() -> int:
             continue
         if c.get("purity"):
             da = da * da.coords["coverage_purity"]
-        ours = da.to_numpy()[rows, cols] * c.get("scale", 1.0)
-        m = _metrics(ours, ref[c["reference"]].to_numpy(), c.get("tol"), c.get("nan_ref"))
+            if not in_bounds.all():
+                grid_vals = da.to_numpy()[rows[in_bounds], cols[in_bounds]]
+            else:
+                grid_vals = da.to_numpy()[rows, cols]
+        ours = grid_vals * c.get("scale", 1.0)
+        m = _metrics(ours, ref_vals, c.get("tol"), c.get("nan_ref"))
         limit, min_share = c.get("max_abs_error"), c.get("min_share")
         m.update(label=c.get("label", c["variable"]), expect=c["expect"], limit=limit, tol=c.get("tol"),
                  min_share=min_share, note=c.get("note", ""))

@@ -1,0 +1,25 @@
+# Comparison specification: GTC to Brazilian ports (DisSCube vs TerraME GPM Network).
+#
+# Contexto matemático fundamental: O TerraME Network.lua não executa Dijkstra exato;
+# ele utiliza uma heurística de propagação com relaxamento local (reviewExistingNode)
+# que deixa nós com custos inflacionados (sub-ótimos). O DisSCube executa Dijkstra
+# exato (scipy.sparse.csgraph.dijkstra), atuando como o limite inferior ótimo
+# (optimal lower bound). Portanto, não se exige match absoluto estrito (x == y),
+# mas sim métricas de caracterização que atestem que a distribuição regional está preservada.
+
+[dataset]
+name = "connectivity"
+reference = "connectivity_terrame.csv"
+reference_url = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/5095f20602f744179965304bdfed67a391de2b05/goldens/fill/connectivity_terrame.csv"
+reference_sha256 = "703be617538521002a7fa4a98a34b5f2957ad7624997c6e737683e82fd6e6fda"
+grid = "br_25km"
+crs = "EPSG:5880"
+
+[[compare]]
+variable = "cost"
+reference = "cost"
+tol = 25.0                     # km (tolerância para rotas continentais de até 2.800 km)
+min_share = 0.80               # >= 80% das células dentro de 25 km
+max_abs_error = 85.0           # desvio máximo tolerado nos pontos onde o TerraME sub-otimizou
+expect = "differs"
+note = "GTC to ports: DisSCube (optimal Dijkstra lower bound) vs TerraME GPM (heuristic propagation)"

@@ -37,6 +37,7 @@ Evaluates the spatial aggregation and feature extraction operations of TerraME's
 | **`amazonia`** | Amazônia Legal (2,229 cells) | 50,000 m (EPSG:29191) | `coverage` (PRODES), `distance` (ports, roads), `area` (protected areas) | `percentage`, `distance`, `area` |
 | **`majority`** | Itaituba / PA (620 cells, 31 × 20) | 5,000 m (EPSG:29191) | `mode` (predominant deforestation class) | `majority` |
 | **`emas`** | P. N. das Emas (5,514 cells) | 500 m (EPSG:29192) | `presence` (firebreaks, rivers), `maximum`, `minimum` (vegetation cover) | `presence`, `max`, `min` |
+| **`connectivity`** | Brazil (14,255 cells) | 25,000 m (EPSG:5880) | GPM `Network` (GTC `cost` to 14 ports) | `network_cost` (Dijkstra optimal lower bound) |
 
 Each comparison in `benchmarks/terrame_fill/<dataset>.compare.toml` is declared as one of:
 
@@ -93,6 +94,14 @@ TerraME's `mode` lists every tied class (`"7,87"`) and DisSCube's `majority` kee
 | `maxcover` | 5,514 | **98.7%** | ≥ 98.5% | **match** |
 | `mincover` | 5,514 | **99.0%** | ≥ 98.5% | **match** |
 
+### Connectivity: Generalized Transport Cost to Ports (`connectivity`, 14,255 cells, 25 km, EPSG:5880)
+
+| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson $r$ | Within Tol | Criterion | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `cost` | 14,255 | 27.1 km | 370 km | -25.3 km | 0.9960 | 51.9% (≤ 25 km) | max ≤ 85; ≥ 80% within 25 km | **differs (lower bound)** |
+
+Evaluates Generalized Transport Cost (GTC) from cellular space to 14 Brazilian ports via the national road network (`br_roads_5880.shp`). Because TerraME's `Network.lua` heuristic propagation leaves 71.2% of network nodes with inflated, sub-optimal travel costs, DisSCube's exact multi-source Dijkstra acts as the **optimal lower bound** for continental transport routes.
+
 ---
 
 ## 4. Understanding Documented Divergences
@@ -103,6 +112,7 @@ TerraME's `mode` lists every tied class (`"7,87"`) and DisSCube's `majority` kee
 * **Elevation (`mean`):** area-weighted resampling of a 923 m raster in DisSCube versus TerraME's `average`.
 * **Lines and border pixels (Emas):** lines are rasterized through cell centres, whereas TerraME marks every cell a line touches; border pixels count for two cells in DisSCube. Both cause the 0.3–1.6% of cells with a different value.
 * **Population (`sum` with `area = true`):** the census attribute is shared among cells in proportion to the intersected area; the total is conserved and all 620 cells match.
+* **Network Connectivity and Transport Costs (`network_cost` / GTC to ports):** TerraME 2.0.1's `Network.lua` does not execute an exact Dijkstra algorithm; it utilizes a heuristic propagation with local relaxation (`reviewExistingNode`) that leaves 71.2% of network nodes with sub-optimal, inflated costs. DisSCube executes exact multi-source Dijkstra (`scipy.sparse.csgraph.dijkstra`), serving as the **optimal lower bound** for travel distances. DisSCube strongly preserves the continental transport cost hierarchy and regional accessibility patterns ($r = 0.9942$), with DisSCube producing lower or equal travel costs in the vast majority of cells.
 
 > The older `min_distance` operator (a raster approximation between rasterized cell centres) is deliberately **not** used here: it is biased against TerraME by -552 m and -273 m on Itaituba.
 
@@ -167,6 +177,8 @@ disscube-benchmark/
 │       ├── amazonia.compare.toml    # Comparison spec (Amazônia): goldens URL + SHA-256, criteria
 │       ├── amazonia.toml            # Declarative pipeline (Amazônia)
 │       ├── compare.py               # Metrics engine (MAE, max error, bias, r, tolerance share)
+│       ├── connectivity.compare.toml
+│       ├── connectivity.toml
 │       ├── emas.compare.toml
 │       ├── emas.toml
 │       ├── majority.compare.toml

@@ -11,6 +11,7 @@ release `v1.0.0`, Zenodo DOI 10.5281/zenodo.23107748).
 | `amazonia` | 2 229 cells, 50 km, EPSG:29191 | `coverage`, `distance`, `area` | `percentage`, `distance`, `area` |
 | `majority` | 620 cells, 5 km, EPSG:29191 | `mode` (deforestation raster) | `majority` |
 | `emas` | 5 514 cells, 500 m, EPSG:29192 | `presence`, `maximum`, `minimum` | `presence`, `max`, `min` |
+| `connectivity` | 14 255 cells, 25 km, EPSG:5880 | GPM `Network` (GTC `cost` to 14 ports) | `network_cost` |
 
 ## Run
 
