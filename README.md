@@ -63,7 +63,7 @@ The suite evaluates the spatial aggregation and feature-extraction operations of
 Each `benchmarks/terrame_fill/<dataset>.compare.toml` declares every comparison as one of:
 
 - `expect = "match"`: has an explicit criterion (`max_abs_error` and/or `min_share` at `tol`). **The run exits with status 1 if the criterion is not met.**
-- `expect = "differs"`: reported only, never fails the run. Used for `connectivity`, where the platforms differ by construction (section 5).
+- `expect = "differs"`: reported only, never fails the run. Used for `connectivity`, where the two methods are not expected to agree cell by cell (section 4).
 - `kind = "categorical"`: compares class values (TerraME `mode`). The golden column is text, holding one class or every tied class (`"7,87"`). A cell agrees when DisSCube's class is one of them, and the criterion is `min_share`.
 - `[[unsupported]]`: a TerraME operation with no DisSCube operator yet (none at the moment).
 
@@ -128,15 +128,44 @@ TerraME's `mode` lists every tied class (`"7,87"`), and DisSCube's `majority` ke
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cost` | 14,255 | 27.1 km | 370 km | -25.3 km | 0.9960 | 51.9% | differs (reported only) |
 
-This comparison is **reported, not pass/fail**. TerraME's `Network` computes costs by heuristic propagation, whereas DisSCube computes the exact least cost (multi-source Dijkstra over the road network, `scipy.sparse.csgraph.dijkstra`). The two are therefore expected to differ, and DisSCube's cost is a lower bound for TerraME's. The negative bias (-25.3 km) is consistent with that, and the high correlation shows that both preserve the regional pattern of accessibility.
+This comparison is **reported, not pass/fail**. The two tools use different methods: TerraME's `Network` (GPM) propagates costs over the road lines to build a route tree, whereas DisSCube computes the exact least cost with a multi-source Dijkstra over the road graph (`scipy.sparse.csgraph.dijkstra`), with the same ports, the same road layer and the same cost factors (`custo_ajus`, `outside = 2.0`). The correlation is high (r = 0.9960), so both preserve the regional pattern of accessibility, but they do **not** agree cell by cell, and **the cause of the difference is not yet established**.
 
-<!-- TODO: if you want to state how many network nodes TerraME leaves above the optimal cost, add a script to this repository that computes it per node (TerraME node cost vs. exact Dijkstra) and writes it to report.json, then cite that value here. Until then, do not quote a percentage. -->
+#### What the difference looks like
+
+Computed from the golden and the road layer used here:
+
+- It is mostly one-sided: by the sign of the difference, DisSCube's cost is lower than TerraME's in 84.7% of cells and higher in 15.3%.
+- It is **not smooth**. A few exact values recur: -26.80 km in about 2,900 cells (≈ 20% of the grid), -25.42 km in about 340, and -210.73 km in 227. Cells whose routes go through the same point of the network inherit the same offset.
+- The bias grows with the distance of the cell centre to the nearest road (about -14 km within 5 km, about -38 km beyond 50 km).
+
+#### What was tested and does not explain it
+
+These checks rebuild TerraME's documented rules (read from the GPM source) in Python. They are approximations of TerraME, not TerraME runs.
+
+| Hypothesis | Result |
+| --- | --- |
+| Different network topology (TerraME joins lines only at end points) | Not the cause: the shapefile has no T-junctions, and both graphs are identical (116,824 nodes) |
+| One joint kept per pair of adjacent lines (14 short rings share both end points) | Not the cause: the recurring offsets are unchanged |
+| Exact coordinate equality (`error = 0`) versus 1 mm rounding | Not the cause: the graphs differ by 1 node out of 116,825 |
+| Straight-line distance between line ends instead of length along the polyline | Not the cause: it makes the difference larger (bias -38.3 km) |
+| Two ports attached to the same road (TerraME keeps one target per line) | Not the cause: the 14 ports are on 14 different roads |
+| How a cell and a port enter the network | Explains part of it: entering as TerraME does (closest line, foot of the perpendicular, nearest end) reduces the cells where TerraME is lower from 15.3% to about 2%, but it does not change the recurring offsets |
+
+#### Open
+
+The recurring negative offsets are still unexplained. The leading candidate is a suboptimal route chosen by TerraME at specific points of its propagation, but this is **not verified**: it requires TerraME's own per-node costs, which the golden does not contain. Until then, read the `connectivity` row as a documented difference between two methods, **not** as evidence that either tool is correct or incorrect.
+
+<!-- TODO: after exporting per-node costs from TerraME (network.netpoints) and comparing them node by node with the exact Dijkstra, replace this subsection with the result and, if confirmed, name the mechanism. -->
+
+#### Note on the input layer
+
+In `br_roads_5880.shp`, `custo_ajus` is between 0.18 and 1.19 for almost every feature, but one 29 km segment has the value 1,194,000. It looks like a unit error (1.194 × 10⁶). Both tools read the same value, so it is not a source of disagreement between them, but it is worth correcting upstream.
 
 ---
 
 ## 5. Documented divergences
 
-Differences below come from how each platform defines the operation, not from errors in either.
+Differences below come from how each platform defines the operation, not from errors in either, with one exception: the cause of the `cost` difference is still open (section 4).
 
 | Variable(s) | Operator | Observed difference | Cause |
 | --- | --- | --- | --- |
@@ -146,7 +175,7 @@ Differences below come from how each platform defines the operation, not from er
 | `elevation` | `mean` | Max error 10.1 m | DisSCube uses area-weighted resampling of a 923 m raster, whereas TerraME uses `average` |
 | `firebreak`, `river` (Emas) | `presence` | 0.3–1.6% of cells with a different value | Lines are rasterized through cell centres in DisSCube, whereas TerraME marks every cell a line touches. Border pixels count for two cells in DisSCube |
 | `population` | `sum` (`area = true`) | All 620 cells match | The census attribute is shared among cells in proportion to the intersected area, and the total is conserved |
-| `cost` | `network_cost` | Mean error 27.1 km, bias -25.3 km, r = 0.9960 | Heuristic propagation (TerraME) versus exact least cost (DisSCube). See section 4 |
+| `cost` | `network_cost` | Mean error 27.1 km, bias -25.3 km, r = 0.9960 | Open. Different methods (route propagation in TerraME, exact Dijkstra in DisSCube), same layers and factors. The difference is concentrated in a few recurring offsets, and several candidate causes were ruled out. See section 4 |
 
 > The older `min_distance` operator (a raster approximation between rasterized cell centres) is deliberately **not** used here. It is biased against TerraME by -552 m and -273 m on Itaituba.
 
@@ -157,7 +186,7 @@ Differences below come from how each platform defines the operation, not from er
 Numerical results of spatial operations can depend on library versions (GEOS, GDAL, rasterio, shapely). To keep the comparison stable:
 
 - DisSCube and the goldens are pinned to the versions in section 2.
-- Python dependencies are pinned in `requirements.txt`. <!-- TODO: confirm exact pins or add a lock file, and consider a Dockerfile for the benchmark itself -->
+- Python dependencies are in `requirements.txt`. DisSCube is pinned to a commit there. **The `connectivity` case needs `network_cost`, which is not in the pin `cef6ee2` and not in PyPI 0.4.0**: pin DisSCube to a release that contains it (`>=0.5.0`). <!-- TODO: after the DisSCube release, replace the git pin with the release and fill the version in sections 2 and 4. Also confirm exact pins or add a lock file, and consider a Dockerfile for the benchmark itself -->
 - Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256 on every run.
 
 <!-- TODO: if report.json does not yet record library versions (disscube, numpy, scipy, rasterio, shapely, GDAL, GEOS), add them, so any difference between machines can be traced. -->
