@@ -2,125 +2,172 @@
 
 [![CI](https://github.com/LambdaGeo/disscube-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/LambdaGeo/disscube-benchmark/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Goldens: Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23107748.svg)](https://doi.org/10.5281/zenodo.23107748)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) <!-- TODO: DOI of this repository's own release -->
+[![Goldens: Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23107748.svg)](https://doi.org/10.5281/zenodo.23107748) <!-- TODO: replace with the DOI of the goldens release that includes majority, connectivity and per-year goldens -->
 [![Upstream: DisSCube](https://img.shields.io/badge/Engine-DisSCube-green.svg)](https://pypi.org/project/disscube/)
 
-**Quantitative Numerical and Spatial Parity Benchmark for DisSCube against Canonical TerraME Goldens.**
+**Quantitative numerical and spatial parity benchmark of DisSCube against TerraME reference outputs (goldens).**
 
-This repository forms the **Level 2 (Parity Benchmark & Quantitative Validation)** foundation of the reproducible replication framework presented in:
+This repository is **Level 2 (parity benchmark and quantitative validation)** of the replication framework presented in:
 
 > Costa, S. S. (2026). *Declarative Spatial Data Cubes and Verifiable Provenance for Reproducible Land-Use Change Modelling: A Three-Level Replication of LuccME*. Big Earth Data (Taylor & Francis).
 
----
-
-## 1. Scientific Motivation
-
-When porting environmental simulation models from legacy imperative platforms (such as `TerraME 2.0.1` and `LuccME 3.1`) to declarative spatial data cubes (`DisSCube`), demonstration code alone cannot guarantee scientific fidelity. 
-
-**`disscube-benchmark`** provides a rigorous, automated testing suite that executes modern declarative data cube derivations and measures cell-by-cell numerical parity against the immutable canonical reference goldens published in [`LambdaGeo/luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) (Zenodo DOI: [10.5281/zenodo.23107748](https://doi.org/10.5281/zenodo.23107748)). No reference data or TerraME code is stored in this repository: goldens are fetched at run time, pinned to release `v1.0.0` and verified by SHA-256.
-
-Every benchmark execution checks:
-1. **Mean Absolute Error (MAE)** and **Max Absolute Error ($\max |y - \hat{y}|$)** across all cells.
-2. **Mean Bias Error (MBE)** and **Pearson Correlation ($r$)**.
-3. **Share of cells within strict physical tolerances** (`min_share` at tolerance `tol`).
-4. **Automated pass/fail criteria**: Continuous Integration (CI) fails if numerical parity regresses beyond defined physical limits.
+Reviewers and readers can verify every number in the paper by running this repository (see [Quick start](#4-quick-start)). No TerraME installation is needed: the references are pre-computed, hashed and archived.
 
 ---
 
-## 2. Benchmark Suite: `terrame_fill`
+## 1. Scientific motivation
 
-Evaluates the spatial aggregation and feature extraction operations of TerraME's `gis` package (`cells:fill{}`) across three canonical study areas. DisSCube derives each variable **on the same grid** as TerraME, and the cells are compared with the cellular space TerraME produced, the `goldens/fill/<dataset>_terrame.csv` files of `luccme-goldens` (referenced by URL and SHA-256 in each `<dataset>.compare.toml`).
+Porting a model or a data-preparation step from an imperative platform (TerraME 2.0.1, LuccME 3.1) to a declarative one (DisSCube) is not validated by running demonstration code. It is validated by comparing results, cell by cell, against reference outputs produced by the original platform.
 
-| Case | Domain & Dimensions | Grid Resolution & CRS | TerraME `fill` operation | DisSCube operator |
-| :--- | :--- | :--- | :--- | :--- |
-| **`itaituba`** | Itaituba / PA (620 cells, 31 × 20) | 5,000 m (EPSG:29191) | `average` (elevation), `coverage` (deforestation), `distance` (roads, localities), `sum` + `area` (population) | `mean`, `percentage`, `distance`, `sum` (`area = true`) |
-| **`amazonia`** | Amazônia Legal (2,229 cells) | 50,000 m (EPSG:29191) | `coverage` (PRODES), `distance` (ports, roads), `area` (protected areas) | `percentage`, `distance`, `area` |
-| **`majority`** | Itaituba / PA (620 cells, 31 × 20) | 5,000 m (EPSG:29191) | `mode` (predominant deforestation class) | `majority` |
-| **`emas`** | P. N. das Emas (5,514 cells) | 500 m (EPSG:29192) | `presence` (firebreaks, rivers), `maximum`, `minimum` (vegetation cover) | `presence`, `max`, `min` |
-| **`connectivity`** | Brazil (14,255 cells) | 25,000 m (EPSG:5880) | GPM `Network` (GTC `cost` to 14 ports) | `network_cost` (Dijkstra optimal lower bound) |
+This benchmark derives each variable with DisSCube **on the same grid** that TerraME used, and compares it with the cellular space TerraME produced (`goldens/fill/<dataset>_terrame.csv` in [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens)). It reports, per variable:
 
-Each comparison in `benchmarks/terrame_fill/<dataset>.compare.toml` is declared as one of:
+1. Mean absolute error (MAE) and maximum absolute error over all cells.
+2. Mean bias error (MBE) and Pearson correlation (r).
+3. The share of cells within a stated tolerance (`min_share` at `tol`).
+4. For categorical variables, the share of cells whose class agrees.
 
-* `expect = "match"` — has an explicit criterion (`max_abs_error` and/or `min_share` at `tol`); **the run exits with status 1 if it is not met**.
-* `expect = "differs"` — reported only, never fails the run; available for operators that differ by construction (none at the moment).
-* `kind = "categorical"` — compares class values (TerraME `mode`): the golden column is text, one class or every tied class (`"7,87"`); a cell agrees when DisSCube's class is one of them, and the criterion is `min_share`.
-* `[[unsupported]]` — TerraME operation with no DisSCube operator yet (none at the moment).
+Where the two platforms differ **by construction**, the difference is documented and explained (section 5), not hidden by loosening a threshold.
+
+No reference data and no TerraME code is stored here. Goldens are fetched at run time and verified by SHA-256.
 
 ---
 
-## 3. Quantitative Parity Results
+## 2. Reproducibility chain
 
-Obtained with **DisSCube** (`main`, commit `cef6ee2`; only `population` needs it, everything else also runs on PyPI 0.4.0) against the **`luccme-goldens` v1.0.0** fill goldens (TerraME 2.0.1). The tables are produced by `compare.py` (`make benchmark-all`); CI publishes them in each job summary. Coverage values are fractions (0–1), as in the goldens.
+Every artifact in the chain is versioned, hashed and, where applicable, archived with a DOI.
+
+| Level | Artifact | What it provides | Pinned version | Identifier |
+| --- | --- | --- | --- | --- |
+| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | `X.Y.Z` <!-- TODO: release containing network_cost and sum with area=true --> | PyPI + DOI <!-- TODO --> |
+| Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) | `vX.Y.Z` <!-- TODO --> | DOI <!-- TODO --> |
+| Reference generator | [`terrame-docker`](https://github.com/LambdaGeo/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `X.Y.Z` <!-- TODO --> | image digest `sha256:...` <!-- TODO --> + DOI |
+| Benchmark | this repository | Pipelines, comparison specs, metrics engine | `vX.Y.Z` <!-- TODO --> | DOI <!-- TODO --> |
+
+Each `<dataset>.compare.toml` records the URL and SHA-256 of its golden, so a wrong or modified reference file fails before any metric is computed.
+
+---
+
+## 3. Benchmark suite: `terrame_fill`
+
+The suite evaluates the spatial aggregation and feature-extraction operations of TerraME's `gis` package (`cs:fill{}`) across five cases.
+
+| Case | Domain and size | Grid and CRS | TerraME `fill` operation | DisSCube operator |
+| --- | --- | --- | --- | --- |
+| `itaituba` | Itaituba / PA, 620 cells (31 × 20) | 5,000 m, EPSG:29191 | `average` (elevation), `coverage` (deforestation), `distance` (roads, localities), `sum` + `area` (population) | `mean`, `percentage`, `distance`, `sum` (`area = true`) |
+| `amazonia` | Amazônia Legal, 2,229 cells | 50,000 m, EPSG:29191 | `coverage` (PRODES), `distance` (ports, roads), `area` (protected areas) | `percentage`, `distance`, `area` |
+| `majority` | Itaituba / PA, 620 cells (31 × 20) | 5,000 m, EPSG:29191 | `mode` (predominant deforestation class) | `majority` |
+| `emas` | P. N. das Emas, 5,514 cells | 500 m, EPSG:29192 | `presence` (firebreaks, rivers), `maximum`, `minimum` (vegetation cover) | `presence`, `max`, `min` |
+| `connectivity` | Brazil, 14,255 cells | 25,000 m, EPSG:5880 | GPM `Network` (generalized transport cost, GTC, to 14 ports) | `network_cost` (exact multi-source Dijkstra) |
+
+Each `benchmarks/terrame_fill/<dataset>.compare.toml` declares every comparison as one of:
+
+- `expect = "match"`: has an explicit criterion (`max_abs_error` and/or `min_share` at `tol`). **The run exits with status 1 if the criterion is not met.**
+- `expect = "differs"`: reported only, never fails the run. Used for `connectivity`, where the platforms differ by construction (section 5).
+- `kind = "categorical"`: compares class values (TerraME `mode`). The golden column is text, holding one class or every tied class (`"7,87"`). A cell agrees when DisSCube's class is one of them, and the criterion is `min_share`.
+- `[[unsupported]]`: a TerraME operation with no DisSCube operator yet (none at the moment).
+
+### How the criteria were set
+
+The thresholds are **regression guards**: they fail CI if parity gets worse than what was observed and explained. They are not claims of equivalence beyond that. <!-- TODO: confirm this statement is accurate; if thresholds were derived from a physical argument (e.g. half the source pixel size), state that argument here per variable instead. -->
+
+For every variable with a non-exact result, the cause of the difference is documented in section 5, and the table in section 4 shows the observed value next to the threshold so that the margin is visible.
+
+---
+
+## 4. Quantitative parity results
+
+Obtained with DisSCube `X.Y.Z` against the `luccme-goldens` `vX.Y.Z` goldens (TerraME 2.0.1, LuccME 3.1). <!-- TODO: fill versions -->
+The tables are produced by `compare.py` (`make benchmark-all`), and CI publishes them in each job summary. Coverage values are fractions (0–1), as in the goldens.
 
 ### Itaituba (31 × 20 cells, 5 km, EPSG:29191)
 
-| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson $r$ | Criterion | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `elevation` | 620 | 0.889 m | 10.1 m | -0.0746 m | 0.9995 | max ≤ 11 m | **match** |
-| `defor_7` | 620 | 0.00054 | 0.00638 | -3.4e-05 | 1.0000 | max ≤ 0.01 | **match** |
-| `defor_87` | 620 | 0.00054 | 0.00638 | +1.4e-05 | 1.0000 | max ≤ 0.01 | **match** |
-| `defor_167` | 620 | 6.5e-05 | 0.00395 | +2.0e-05 | 1.0000 | max ≤ 0.01 | **match** |
-| `defor_255` | 620 | 5.2e-08 | 2.2e-05 | -1.8e-08 | 1.0000 | max ≤ 0.01 | **match** |
-| `distroad` | 620 | 24 m | 1,885 m | -24 m | 0.9999 | ≥ 94% within 100 m (94.5%) | **match** |
-| `distlocal` | 620 | 1.2e-06 m | 5.0e-06 m | +3.3e-08 m | 1.0000 | 100% within 1 m | **match (exact)** |
-| `population` | 620 | 9.1e-09 | 3.8e-07 | -6.1e-11 | 1.0000 | max ≤ 1e-5 | **match** |
+| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson r | Criterion | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `elevation` | 620 | 0.889 m | 10.1 m | -0.0746 m | 0.9995 | max ≤ 11 m | match |
+| `defor_7` | 620 | 0.00054 | 0.00638 | -3.4e-05 | 1.0000 | max ≤ 0.01 | match |
+| `defor_87` | 620 | 0.00054 | 0.00638 | +1.4e-05 | 1.0000 | max ≤ 0.01 | match |
+| `defor_167` | 620 | 6.5e-05 | 0.00395 | +2.0e-05 | 1.0000 | max ≤ 0.01 | match |
+| `defor_255` | 620 | 5.2e-08 | 2.2e-05 | -1.8e-08 | 1.0000 | max ≤ 0.01 | match |
+| `distroad` | 620 | 24 m | 1,885 m | -24 m | 0.9999 | ≥ 94% within 100 m (94.5%) | match |
+| `distlocal` | 620 | 1.2e-06 m | 5.0e-06 m | +3.3e-08 m | 1.0000 | 100% within 1 m | match (exact) |
+| `population` | 620 | 9.1e-09 | 3.8e-07 | -6.1e-11 | 1.0000 | max ≤ 1e-5 | match |
 
 ### Amazônia Legal (2,229 cells, 50 km, EPSG:29191)
 
-| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson $r$ | Criterion | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `prodes_10` | 2,174 | 6.7e-13 | 4.8e-11 | +1.6e-13 | 1.0000 | max ≤ 1e-4 | **match (identical)** |
-| `prodes_208` | 2,174 | 1.1e-12 | 4.9e-11 | -1.4e-13 | 1.0000 | max ≤ 1e-4 | **match (identical)** |
-| `protected` | 2,229 | 1.75e-05 | 0.00433 | -1.75e-05 | 1.0000 | ≥ 99% within 0.01 (100.0%) | **match** |
-| `distroads` | 2,229 | 300 m | 18.1 km | -300 m | 0.9999 | ≥ 78% within 100 m (79.2%) | **match** |
-| `distports` | 2,229 | 3.7e-05 m | 5.0e-04 m | -2.1e-06 m | 1.0000 | 100% within 1 m | **match (exact)** |
+| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson r | Criterion | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `prodes_10` | 2,174 | 6.7e-13 | 4.8e-11 | +1.6e-13 | 1.0000 | max ≤ 1e-4 | match (identical) |
+| `prodes_208` | 2,174 | 1.1e-12 | 4.9e-11 | -1.4e-13 | 1.0000 | max ≤ 1e-4 | match (identical) |
+| `protected` | 2,229 | 1.75e-05 | 0.00433 | -1.75e-05 | 1.0000 | ≥ 99% within 0.01 (100.0%) | match |
+| `distroads` | 2,229 | 300 m | 18.1 km | -300 m | 0.9999 | ≥ 78% within 100 m (79.2%) | match |
+| `distports` | 2,229 | 3.7e-05 m | 5.0e-04 m | -2.1e-06 m | 1.0000 | 100% within 1 m | match (exact) |
 
-The 55 cells without PRODES pixels are `NaN` in DisSCube and `0` in TerraME; the benchmark checks that TerraME's value there is exactly that expected value (`nan_ref = 0.0`).
+The 55 cells without PRODES pixels are `NaN` in DisSCube and `0` in TerraME. The benchmark checks that TerraME's value there is exactly the expected one (`nan_ref = 0.0`).
 
 ### Itaituba, predominant class (`majority`, 620 cells, 5 km)
 
 | Variable | Cells | Agreement | Criterion | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `defor_mode` | 620 | **100.0%** | ≥ 100% agree | **match** |
+| --- | --- | --- | --- | --- |
+| `defor_mode` | 620 | 100.0% | ≥ 100% agree | match |
 
-TerraME's `mode` lists every tied class (`"7,87"`) and DisSCube's `majority` keeps the smallest; a cell agrees when DisSCube's class is among the listed ones. In this raster (classes 7, 87 and 167) no cell has a tie, so the comparison is exact. The reference is pinned to a `luccme-goldens` commit (SHA-256 verified), not to a release.
+TerraME's `mode` lists every tied class (`"7,87"`), and DisSCube's `majority` keeps the smallest. A cell agrees when DisSCube's class is among the listed ones. In this raster (classes 7, 87 and 167) no cell has a tie, so the comparison is exact.
 
 ### Parque Nacional das Emas (5,514 cells, 500 m, EPSG:29192)
 
 | Variable | Cells | Same-value share | Criterion | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `firebreak` | 5,514 | **98.4%** | ≥ 98.0% | **match** |
-| `river` | 5,514 | **99.7%** | ≥ 98.0% | **match** |
-| `maxcover` | 5,514 | **98.7%** | ≥ 98.5% | **match** |
-| `mincover` | 5,514 | **99.0%** | ≥ 98.5% | **match** |
+| --- | --- | --- | --- | --- |
+| `firebreak` | 5,514 | 98.4% | ≥ 98.0% | match |
+| `river` | 5,514 | 99.7% | ≥ 98.0% | match |
+| `maxcover` | 5,514 | 98.7% | ≥ 98.5% | match |
+| `mincover` | 5,514 | 99.0% | ≥ 98.5% | match |
 
-### Connectivity: Generalized Transport Cost to Ports (`connectivity`, 14,255 cells, 25 km, EPSG:5880)
+### Connectivity: generalized transport cost to ports (`connectivity`, 14,255 cells, 25 km, EPSG:5880)
 
-| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson $r$ | Within Tol | Criterion | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `cost` | 14,255 | 27.1 km | 370 km | -25.3 km | 0.9960 | 51.9% (≤ 25 km) | max ≤ 85; ≥ 80% within 25 km | **differs (lower bound)** |
+| Variable | Cells | Mean \|Err\| | Max \|Err\| | Bias | Pearson r | Within 25 km | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `cost` | 14,255 | 27.1 km | 370 km | -25.3 km | 0.9960 | 51.9% | differs (reported only) |
 
-Evaluates Generalized Transport Cost (GTC) from cellular space to 14 Brazilian ports via the national road network (`br_roads_5880.shp`). Because TerraME's `Network.lua` heuristic propagation leaves 71.2% of network nodes with inflated, sub-optimal travel costs, DisSCube's exact multi-source Dijkstra acts as the **optimal lower bound** for continental transport routes.
+This comparison is **reported, not pass/fail**. TerraME's `Network` computes costs by heuristic propagation, whereas DisSCube computes the exact least cost (multi-source Dijkstra over the road network, `scipy.sparse.csgraph.dijkstra`). The two are therefore expected to differ, and DisSCube's cost is a lower bound for TerraME's. The negative bias (-25.3 km) is consistent with that, and the high correlation shows that both preserve the regional pattern of accessibility.
 
----
-
-## 4. Understanding Documented Divergences
-
-* **Line distances (`distance`: `distroad`, `distroads`):** TerraME 2.0.1 measures from the cell centre to the nearest *vertex* of a polyline; DisSCube (GEOS/Shapely) measures to the nearest point on the *segment*. DisSCube's distance is therefore never larger, and the gap concentrates where road vertices are sparse (94.5% of cells within 100 m at 5 km, 79.2% at 50 km).
-* **Point distances (`distlocal`, `distports`):** points are vertices by definition, so both tools agree to numerical precision (< 1e-5 m).
-* **Coverage (`percentage`):** both tools divide by the valid pixels of the cell, so no correction is needed (identical for PRODES, below 0.0064 for deforestation in Itaituba).
-* **Elevation (`mean`):** area-weighted resampling of a 923 m raster in DisSCube versus TerraME's `average`.
-* **Lines and border pixels (Emas):** lines are rasterized through cell centres, whereas TerraME marks every cell a line touches; border pixels count for two cells in DisSCube. Both cause the 0.3–1.6% of cells with a different value.
-* **Population (`sum` with `area = true`):** the census attribute is shared among cells in proportion to the intersected area; the total is conserved and all 620 cells match.
-* **Network Connectivity and Transport Costs (`network_cost` / GTC to ports):** TerraME 2.0.1's `Network.lua` does not execute an exact Dijkstra algorithm; it utilizes a heuristic propagation with local relaxation (`reviewExistingNode`) that leaves 71.2% of network nodes with sub-optimal, inflated costs. DisSCube executes exact multi-source Dijkstra (`scipy.sparse.csgraph.dijkstra`), serving as the **optimal lower bound** for travel distances. DisSCube strongly preserves the continental transport cost hierarchy and regional accessibility patterns ($r = 0.9942$), with DisSCube producing lower or equal travel costs in the vast majority of cells.
-
-> The older `min_distance` operator (a raster approximation between rasterized cell centres) is deliberately **not** used here: it is biased against TerraME by -552 m and -273 m on Itaituba.
+<!-- TODO: if you want to state how many network nodes TerraME leaves above the optimal cost, add a script to this repository that computes it per node (TerraME node cost vs. exact Dijkstra) and writes it to report.json, then cite that value here. Until then, do not quote a percentage. -->
 
 ---
 
-## 5. Quick Start
+## 5. Documented divergences
 
-### 1. Installation
+Differences below come from how each platform defines the operation, not from errors in either.
+
+| Variable(s) | Operator | Observed difference | Cause |
+| --- | --- | --- | --- |
+| `distroad`, `distroads` | `distance` (lines) | DisSCube distance is never larger. 94.5% of cells within 100 m at 5 km, 79.2% at 50 km | TerraME 2.0.1 measures from the cell centre to the nearest *vertex* of a polyline. DisSCube (GEOS/Shapely) measures to the nearest point on the *segment*. The gap concentrates where road vertices are sparse |
+| `distlocal`, `distports` | `distance` (points) | Agreement to numerical precision (< 1e-5 m) | Points are vertices by definition, so both definitions coincide |
+| `defor_*`, `prodes_*` | `percentage` | Identical for PRODES. Below 0.0064 for deforestation in Itaituba | Both tools divide by the valid pixels of the cell, so no correction is needed |
+| `elevation` | `mean` | Max error 10.1 m | DisSCube uses area-weighted resampling of a 923 m raster, whereas TerraME uses `average` |
+| `firebreak`, `river` (Emas) | `presence` | 0.3–1.6% of cells with a different value | Lines are rasterized through cell centres in DisSCube, whereas TerraME marks every cell a line touches. Border pixels count for two cells in DisSCube |
+| `population` | `sum` (`area = true`) | All 620 cells match | The census attribute is shared among cells in proportion to the intersected area, and the total is conserved |
+| `cost` | `network_cost` | Mean error 27.1 km, bias -25.3 km, r = 0.9960 | Heuristic propagation (TerraME) versus exact least cost (DisSCube). See section 4 |
+
+> The older `min_distance` operator (a raster approximation between rasterized cell centres) is deliberately **not** used here. It is biased against TerraME by -552 m and -273 m on Itaituba.
+
+---
+
+## 6. Environment and pinning
+
+Numerical results of spatial operations can depend on library versions (GEOS, GDAL, rasterio, shapely). To keep the comparison stable:
+
+- DisSCube and the goldens are pinned to the versions in section 2.
+- Python dependencies are pinned in `requirements.txt`. <!-- TODO: confirm exact pins or add a lock file, and consider a Dockerfile for the benchmark itself -->
+- Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256 on every run.
+
+<!-- TODO: if report.json does not yet record library versions (disscube, numpy, scipy, rasterio, shapely, GDAL, GEOS), add them, so any difference between machines can be traced. -->
+
+---
+
+## 7. Quick start
+
+### Install
+
 ```bash
 git clone https://github.com/LambdaGeo/disscube-benchmark.git
 cd disscube-benchmark
@@ -130,87 +177,107 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Validate Declarative Pipelines
+### Validate the declarative pipelines
+
 ```bash
 make validate
 ```
 
-### 3. Run Benchmarks
-You can execute a specific benchmark or the full suite:
+### Run the benchmarks
 
 ```bash
-# Run Itaituba benchmark (derivation + comparison)
-make benchmark DATASET=itaituba
-
-# Run Amazônia benchmark
+make benchmark DATASET=itaituba      # one case: derivation + comparison
 make benchmark DATASET=amazonia
-
-# Run Emas benchmark
+make benchmark DATASET=majority
 make benchmark DATASET=emas
-
-# Run all benchmarks in batch
-make benchmark-all
+make benchmark DATASET=connectivity
+make benchmark-all                   # the whole suite
 ```
 
-Outputs and comparison reports are generated in `benchmarks/terrame_fill/reports/<dataset>/`:
-* `report.md`: Markdown summary table ready for copy-pasting.
-* `report.json`: Machine-readable metrics payload.
+Reports are written to `benchmarks/terrame_fill/reports/<dataset>/`:
 
-Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256. To work offline, point `LUCCME_GOLDENS_DIR` to a local clone of `luccme-goldens` (the same hash is checked):
+- `report.md`: summary tables, ready to paste.
+- `report.json`: machine-readable metrics.
+
+The command exits with status 1 if any `expect = "match"` criterion is not met.
+
+### Work offline
+
+Point `LUCCME_GOLDENS_DIR` to a local clone of `luccme-goldens` (the same SHA-256 is still checked):
 
 ```bash
 LUCCME_GOLDENS_DIR=~/src/luccme-goldens make benchmark DATASET=emas
 ```
 
+### Verify from a clean machine
+
+To confirm that the paper's numbers are reproducible without prior state:
+
+```bash
+rm -rf ~/.cache/disscube/goldens
+make benchmark-all
+```
+
+The tables in `report.md` should match section 4.
+
 ---
 
-## 6. Repository Structure
+## 8. Reproducing the references themselves (optional)
 
-```text
+Reviewers who want to verify the goldens, and not only use them, can regenerate them with the TerraME image. No TerraME installation is required, only Docker.
+
+```bash
+git clone https://github.com/LambdaGeo/luccme-goldens.git
+cd luccme-goldens
+docker pull profsergiocosta/terrame-luccme@sha256:...   # TODO: digest used for the paper
+make run-fill                                           # all fill cases
+```
+
+Regenerated CSV files should have the same SHA-256 as those listed in `checksums.sha256` of the pinned `luccme-goldens` release. (Zipped shapefiles are for visual inspection and are not part of the hash check.) <!-- TODO: confirm that the hashes of regenerated CSVs match on a second machine, and that connectivity (gpm) is covered by the published image -->
+
+---
+
+## 9. Repository structure
+
+```
 disscube-benchmark/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                   # GitHub Actions CI: validate + benchmark matrix
-├── benchmarks/
-│   └── terrame_fill/
-│       ├── README.md                # Detailed documentation of the suite
-│       ├── amazonia.compare.toml    # Comparison spec (Amazônia): goldens URL + SHA-256, criteria
-│       ├── amazonia.toml            # Declarative pipeline (Amazônia)
-│       ├── compare.py               # Metrics engine (MAE, max error, bias, r, tolerance share)
-│       ├── connectivity.compare.toml
-│       ├── connectivity.toml
-│       ├── emas.compare.toml
-│       ├── emas.toml
-│       ├── majority.compare.toml
-│       ├── majority.toml
-│       ├── itaituba.compare.toml
-│       ├── itaituba.toml
-│       └── run.sh                   # Suite runner: run | compare | all
-├── .gitignore
-├── CITATION.cff                     # Citation metadata
-├── LICENSE                          # MIT License
+├── .github/workflows/ci.yml         # CI: validate + benchmark matrix
+├── benchmarks/terrame_fill/
+│   ├── README.md                    # Detailed documentation of the suite
+│   ├── compare.py                   # Metrics engine (MAE, max error, bias, r, tolerance share)
+│   ├── run.sh                       # Suite runner: run | compare | all
+│   ├── <dataset>.toml               # Declarative pipeline (itaituba, amazonia, majority, emas, connectivity)
+│   └── <dataset>.compare.toml       # Comparison spec: golden URL + SHA-256, criteria
+├── CITATION.cff
+├── LICENSE
 ├── Makefile                         # validate, run, compare, benchmark, benchmark-all, clean
-├── README.md                        # General documentation with parity tables
-└── requirements.txt                 # Python dependencies
+├── README.md
+└── requirements.txt
 ```
 
 ---
 
-## 7. Citation and Attribution
+## 10. Citation
 
-If you use this benchmark suite in scientific research, please cite:
+If you use this benchmark in scientific work, please cite the paper above and this repository:
 
-**BibTeX:**
 ```bibtex
 @software{costa2026disscube_benchmark,
-  author       = {Costa, S{\'e}rgio Souza},
-  title        = {disscube-benchmark: Quantitative Numerical and Spatial Parity Benchmark for DisSCube against Canonical TerraME Goldens},
-  year         = {2026},
-  publisher    = {GitHub},
-  journal      = {GitHub repository},
-  howpublished = {\url{https://github.com/LambdaGeo/disscube-benchmark}}
+  author    = {Costa, S{\'e}rgio Souza},
+  title     = {disscube-benchmark: Quantitative Parity Benchmark for DisSCube against TerraME Reference Outputs},
+  year      = {2026},
+  version   = {X.Y.Z},
+  doi       = {10.5281/zenodo.XXXXXXX},
+  url       = {https://github.com/LambdaGeo/disscube-benchmark}
 }
 ```
 
-Reference golden datasets used by this benchmark are archived on Zenodo:
-> Costa, S. S. (2026). *luccme-goldens: Canonical Reference Execution Outputs for TerraME 2.0.1 and LuccME 3.1* (Version v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23107748
+The reference outputs are archived separately:
+
+> Costa, S. S. (2026). *luccme-goldens: Canonical Reference Execution Outputs for TerraME 2.0.1 and LuccME 3.1* (Version vX.Y.Z). Zenodo. <https://doi.org/10.5281/zenodo.23107748>
+
+Upstream TerraME and LuccME are Copyright (C) 2001–2017 INPE and TerraLAB/UFOP (LGPL-3.0).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
