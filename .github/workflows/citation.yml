@@ -41,6 +41,23 @@ jobs:
           meta = json.load(open("zenodo.json"))
           errors = []
 
+          # ORCID iDs must pass the ISO 7064 mod 11-2 checksum (Zenodo rejects
+          # a malformed iD, and the CFF schema alone does not catch it)
+          def orcid_ok(o):
+              d = o.replace("-", "")
+              if len(d) != 16 or not d[:15].isdigit():
+                  return False
+              t = 0
+              for c in d[:15]:
+                  t = (t + int(c)) * 2
+              r = (12 - t % 11) % 11
+              return d[15] == ("X" if r == 10 else str(r))
+
+          for c in meta.get("creators", []):
+              o = c.get("orcid")
+              if o and not orcid_ok(o):
+                  errors.append(f"invalid ORCID checksum for {c.get('name')}: {o}")
+
           # date-released must be ISO and not in the future (UTC)
           pub = datetime.date.fromisoformat(meta["publication_date"])
           today = datetime.datetime.now(datetime.timezone.utc).date()
