@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/LambdaGeo/disscube-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/LambdaGeo/disscube-benchmark/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) <!-- TODO: DOI of this repository's own release -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23163168.svg)](https://doi.org/10.5281/zenodo.23163168)
 [![Goldens: Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23161342.svg)](https://doi.org/10.5281/zenodo.23161342)
 [![Upstream: DisSCube](https://img.shields.io/badge/Engine-DisSCube-green.svg)](https://pypi.org/project/disscube/)
 
@@ -42,7 +42,7 @@ Every artifact in the chain is versioned, hashed and, where applicable, archived
 | Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | commit `66bfc70` (`network_cost`, `sum` with `area=true`; PyPI latest is 0.4.0) | release pending |
 | Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) and TerraME timing | `v1.1.0` | DOI [10.5281/zenodo.23161342](https://doi.org/10.5281/zenodo.23161342) |
 | Reference generator | [`terrame-docker`](https://github.com/profsergiocosta/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `0.4.2` | `sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c`; DOI [10.5281/zenodo.23160784](https://doi.org/10.5281/zenodo.23160784) |
-| Benchmark | this repository | Pipelines, comparison specs, metrics engine | `v1.0.0` | DOI <!-- TODO --> |
+| Benchmark | this repository | Pipelines, comparison specs, metrics engine | `v1.0.2` | DOI [10.5281/zenodo.23163168](https://doi.org/10.5281/zenodo.23163168) |
 
 Each `<dataset>.compare.toml` records the URL and SHA-256 of its golden, so a wrong or modified reference file fails before any metric is computed.
 
