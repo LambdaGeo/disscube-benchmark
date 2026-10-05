@@ -39,9 +39,9 @@ Every artifact in the chain is versioned, hashed and, where applicable, archived
 
 | Level | Artifact | What it provides | Pinned version | Identifier |
 | --- | --- | --- | --- | --- |
-| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | `X.Y.Z` <!-- TODO: release containing network_cost and sum with area=true --> | PyPI + DOI <!-- TODO --> |
-| Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) | `vX.Y.Z` <!-- TODO --> | DOI <!-- TODO --> |
-| Reference generator | [`terrame-docker`](https://github.com/LambdaGeo/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `X.Y.Z` <!-- TODO --> | image digest `sha256:...` <!-- TODO --> + DOI |
+| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | commit `66bfc70` (`network_cost`, `sum` with `area=true`; PyPI latest is 0.4.0) | release pending |
+| Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) and TerraME timing | `v1.1.0` | DOI [10.5281/zenodo.DOI_GOLDENS](https://doi.org/10.5281/zenodo.DOI_GOLDENS) |
+| Reference generator | [`terrame-docker`](https://github.com/profsergiocosta/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `0.4.2` | `sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c`; DOI [10.5281/zenodo.23160784](https://doi.org/10.5281/zenodo.23160784) |
 | Benchmark | this repository | Pipelines, comparison specs, metrics engine | `vX.Y.Z` <!-- TODO --> | DOI <!-- TODO --> |
 
 Each `<dataset>.compare.toml` records the URL and SHA-256 of its golden, so a wrong or modified reference file fails before any metric is computed.
@@ -77,7 +77,7 @@ For every variable with a non-exact result, the cause of the difference is docum
 
 ## 4. Quantitative parity results
 
-Obtained with DisSCube `X.Y.Z` against the `luccme-goldens` `vX.Y.Z` goldens (TerraME 2.0.1, LuccME 3.1). <!-- TODO: fill versions -->
+Obtained with DisSCube at commit `66bfc70` against the `luccme-goldens` `v1.1.0` goldens (TerraME 2.0.1, LuccME 3.1, image `terrame-luccme` 0.4.2).
 The tables are produced by `compare.py` (`make benchmark-all`), and CI publishes them in each job summary. Coverage values are fractions (0–1), as in the goldens.
 
 ### Itaituba (31 × 20 cells, 5 km, EPSG:29191)
@@ -186,7 +186,7 @@ Differences below come from how each platform defines the operation, not from er
 Numerical results of spatial operations can depend on library versions (GEOS, GDAL, rasterio, shapely). To keep the comparison stable:
 
 - DisSCube and the goldens are pinned to the versions in section 2.
-- Python dependencies are in `requirements.txt`. DisSCube is pinned to a commit there. **The `connectivity` case needs `network_cost`, which is not in the pin `cef6ee2` and not in PyPI 0.4.0**: pin DisSCube to a release that contains it (`>=0.5.0`). <!-- TODO: after the DisSCube release, replace the git pin with the release and fill the version in sections 2 and 4. Also confirm exact pins or add a lock file, and consider a Dockerfile for the benchmark itself -->
+- Python dependencies are in `requirements.txt`. DisSCube is pinned to commit `66bfc70`, which adds `network_cost` (needed by `connectivity`; not in PyPI 0.4.0). Replace the pin with the release when available. <!-- TODO: lock file or Dockerfile for the benchmark -->
 - Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256 on every run.
 
 <!-- TODO: if report.json does not yet record library versions (disscube, numpy, scipy, rasterio, shapely, GDAL, GEOS), add them, so any difference between machines can be traced. -->
@@ -258,8 +258,8 @@ Reviewers who want to verify the goldens, and not only use them, can regenerate 
 ```bash
 git clone https://github.com/LambdaGeo/luccme-goldens.git
 cd luccme-goldens
-docker pull profsergiocosta/terrame-luccme@sha256:...   # TODO: digest used for the paper
-make run-fill                                           # all fill cases
+docker pull profsergiocosta/terrame-luccme@sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c
+make run-fill DOCKER_IMAGE=profsergiocosta/terrame-luccme@sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c
 ```
 
 Regenerated CSV files should have the same SHA-256 as those listed in `checksums.sha256` of the pinned `luccme-goldens` release. (Zipped shapefiles are for visual inspection and are not part of the hash check.) <!-- TODO: confirm that the hashes of regenerated CSVs match on a second machine, and that connectivity (gpm) is covered by the published image -->
@@ -290,23 +290,27 @@ disscube-benchmark/
 
 If you use this benchmark in scientific work, please cite the paper above and this repository:
 
-```bibtex
-@software{costa2026disscube_benchmark,
-  author    = {Costa, S{\'e}rgio Souza},
-  title     = {disscube-benchmark: Quantitative Parity Benchmark for DisSCube against TerraME Reference Outputs},
-  year      = {2026},
-  version   = {X.Y.Z},
-  doi       = {10.5281/zenodo.XXXXXXX},
-  url       = {https://github.com/LambdaGeo/disscube-benchmark}
-}
-```
+> Costa, S. S. (2026). *luccme-goldens: Canonical Reference Execution Outputs for TerraME 2.0.1 and LuccME 3.1* (Version v1.1.0). Zenodo. <https://doi.org/10.5281/zenodo.DOI_GOLDENS>
 
-The reference outputs are archived separately:
-
-> Costa, S. S. (2026). *luccme-goldens: Canonical Reference Execution Outputs for TerraME 2.0.1 and LuccME 3.1* (Version vX.Y.Z). Zenodo. <https://doi.org/10.5281/zenodo.23107748>
+Reference image: Costa, S. S. (2026). *terrame-docker: TerraME and LuccME in a Docker image* (Version 0.4.2). Zenodo. <https://doi.org/10.5281/zenodo.23160784>
 
 Upstream TerraME and LuccME are Copyright (C) 2001–2017 INPE and TerraLAB/UFOP (LGPL-3.0).
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+
+## Timing (informational)
+
+```bash
+make timing DATASET=connectivity REPS=5     # also: itaituba, amazonia, emas, majority
+```
+
+Times the DisSCube run (inputs fetched beforehand, 1 warm-up + `REPS` measured runs from an empty
+workspace) and writes `benchmarks/terrame_fill/reports/<dataset>/timing.json` with the median, range,
+peak memory and the machine description. When the `compare.toml` carries `timing_url` and
+`timing_sha256` (set by `make pins` in `luccme-goldens`), the frozen TerraME measurement is fetched,
+SHA-256 verified and printed alongside. The comparison is meaningful only if both were measured
+on equivalent machines and limits (`environment.json` in `luccme-goldens`); it never fails a run.

@@ -33,11 +33,9 @@ ENV/
 htmlcov/
 .mypy_cache/
 
-# Benchmark runtime data & generated reports
+# Benchmark runtime data
 data/
-reports/
 benchmarks/terrame_fill/data/
-benchmarks/terrame_fill/reports/
 benchmarks/terrame_fill/__pycache__/
 
 # OS & IDE

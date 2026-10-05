@@ -1,0 +1,71 @@
+{
+  "dataset": "connectivity",
+  "engine": "DisSCube 0.4.0",
+  "reps": 5,
+  "wall_s": {
+    "median": 16.624,
+    "min": 13.97,
+    "max": 17.418
+  },
+  "max_rss_mb": 343.1,
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 18.559,
+      "user_s": 13.937,
+      "sys_s": 0.36,
+      "max_rss_mb": 342.4
+    },
+    {
+      "rep": 1,
+      "wall_s": 13.97,
+      "user_s": 13.346,
+      "sys_s": 0.24,
+      "max_rss_mb": 342.6
+    },
+    {
+      "rep": 2,
+      "wall_s": 17.418,
+      "user_s": 15.631,
+      "sys_s": 0.362,
+      "max_rss_mb": 342.6
+    },
+    {
+      "rep": 3,
+      "wall_s": 14.602,
+      "user_s": 13.774,
+      "sys_s": 0.365,
+      "max_rss_mb": 342.6
+    },
+    {
+      "rep": 4,
+      "wall_s": 17.138,
+      "user_s": 14.175,
+      "sys_s": 0.348,
+      "max_rss_mb": 342.8
+    },
+    {
+      "rep": 5,
+      "wall_s": 16.624,
+      "user_s": 12.554,
+      "sys_s": 0.266,
+      "max_rss_mb": 343.1
+    }
+  ],
+  "environment": {
+    "python": "3.12.3",
+    "cpu_model": "Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz",
+    "cores": 8,
+    "ram_mb": 15851,
+    "os": "Linux-7.0.0-14-generic-x86_64-with-glibc2.39"
+  },
+  "terrame_reference": {
+    "wall_s": {
+      "median": 11.22,
+      "min": 10.04,
+      "max": 13.75
+    },
+    "max_rss_mb": 335.1,
+    "reps": 5
+  }
+}

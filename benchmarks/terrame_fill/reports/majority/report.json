@@ -1,0 +1,30 @@
+{
+  "dataset": "majority",
+  "grid": "itaituba_5km",
+  "cells": 620,
+  "disscube": "0.4.0",
+  "comparisons": [
+    {
+      "nan_cells": 0,
+      "nan_ok": true,
+      "n": 620,
+      "mean_abs_error": NaN,
+      "max_abs_error": NaN,
+      "bias": NaN,
+      "pearson_r": NaN,
+      "share": 1.0,
+      "exact_share": 1.0,
+      "tie_cells": 0,
+      "tie_share": null,
+      "label": "defor_mode",
+      "expect": "match",
+      "limit": null,
+      "tol": null,
+      "min_share": 1.0,
+      "note": "mode / majority: predominant class per cell; TerraME lists all tied classes, DisSCube takes the smallest",
+      "kind": "categorical",
+      "passed": true
+    }
+  ],
+  "unsupported": []
+}
