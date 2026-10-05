@@ -3,8 +3,10 @@
 
 [dataset]
 name      = "emas"
-reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/emas_terrame.csv"
-reference_sha256 = "332a762b2d9444ffbdd22acdf6406feff22dbb005f129fa5de1efdda930e3939"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/emas_terrame.csv"
+reference_sha256 = "332a762b2d9444ffbdd22acdf6406feff22dbb005f129fa5de1efdda930e3939"   # luccme-goldens v1.1.0 (Zenodo 10.5281/zenodo.23161342)
+timing_url       = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/timing/timing_terrame.json"
+timing_sha256    = "a89a44ffadf1348a88ee79f7795854045b4fa71a57e53898f2a5bc21279f4b3f"
 grid      = "emas_500m"
 crs       = "EPSG:29192"
 

@@ -6,8 +6,10 @@
 
 [dataset]
 name      = "itaituba"
-reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/itaituba_terrame.csv"
-reference_sha256 = "36b7648881b231eeee9e86aede6d22791215786c8bf05a5b38fe19101989d6fb"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/itaituba_terrame.csv"
+reference_sha256 = "36b7648881b231eeee9e86aede6d22791215786c8bf05a5b38fe19101989d6fb"   # luccme-goldens v1.1.0 (Zenodo 10.5281/zenodo.23161342)
+timing_url       = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/timing/timing_terrame.json"
+timing_sha256    = "a89a44ffadf1348a88ee79f7795854045b4fa71a57e53898f2a5bc21279f4b3f"
 grid      = "itaituba_5km"
 crs       = "EPSG:29191"
 

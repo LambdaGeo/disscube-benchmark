@@ -7,8 +7,9 @@ SHELL := /bin/bash
 
 DATASET ?= itaituba
 DATASETS := itaituba amazonia emas majority connectivity
+REPS ?= 5
 
-.PHONY: help validate run compare benchmark benchmark-all clean
+.PHONY: help validate run compare benchmark benchmark-all timing clean
 
 help:
 	@echo "disscube-benchmark — Command Reference"
@@ -19,6 +20,7 @@ help:
 	@echo "  make benchmark-all          Run & compare all datasets (itaituba, amazonia, emas, majority, connectivity)"
 	@echo "  make run DATASET=...        Run data cube derivation without comparing"
 	@echo "  make compare DATASET=...    Run comparison against goldens (requires cube run)"
+	@echo "  make timing DATASET=... REPS=5  Time/peak memory of the DisSCube run (+ pinned TerraME reference)"
 	@echo "  make clean                  Remove generated workspaces and test reports"
 
 validate:
@@ -55,6 +57,10 @@ benchmark-all:
 	@echo "========================================================================";
 	@echo " All benchmarks passed within expected numerical parity tolerances!";
 	@echo "========================================================================";
+
+timing:
+	@echo "==> Timing DisSCube for $(DATASET)..."
+	python benchmarks/terrame_fill/timing.py $(DATASET) --reps $(REPS)
 
 clean:
 	rm -rf benchmarks/terrame_fill/data benchmarks/terrame_fill/reports benchmarks/terrame_fill/__pycache__

@@ -1,0 +1,71 @@
+{
+  "dataset": "itaituba",
+  "engine": "DisSCube 0.4.0",
+  "reps": 5,
+  "wall_s": {
+    "median": 4.675,
+    "min": 4.207,
+    "max": 5.056
+  },
+  "max_rss_mb": 281.0,
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 7.831,
+      "user_s": 2.794,
+      "sys_s": 0.4,
+      "max_rss_mb": 280.7
+    },
+    {
+      "rep": 1,
+      "wall_s": 4.625,
+      "user_s": 2.746,
+      "sys_s": 0.273,
+      "max_rss_mb": 280.7
+    },
+    {
+      "rep": 2,
+      "wall_s": 5.056,
+      "user_s": 2.779,
+      "sys_s": 0.305,
+      "max_rss_mb": 280.7
+    },
+    {
+      "rep": 3,
+      "wall_s": 5.013,
+      "user_s": 2.575,
+      "sys_s": 0.298,
+      "max_rss_mb": 280.7
+    },
+    {
+      "rep": 4,
+      "wall_s": 4.675,
+      "user_s": 2.665,
+      "sys_s": 0.264,
+      "max_rss_mb": 281.0
+    },
+    {
+      "rep": 5,
+      "wall_s": 4.207,
+      "user_s": 2.739,
+      "sys_s": 0.242,
+      "max_rss_mb": 281.0
+    }
+  ],
+  "environment": {
+    "python": "3.12.3",
+    "cpu_model": "Intel(R) Core(TM) i7-7700T CPU @ 2.90GHz",
+    "cores": 8,
+    "ram_mb": 15851,
+    "os": "Linux-7.0.0-14-generic-x86_64-with-glibc2.39"
+  },
+  "terrame_reference": {
+    "wall_s": {
+      "median": 12.65,
+      "min": 11.32,
+      "max": 14.74
+    },
+    "max_rss_mb": 156.5,
+    "reps": 5
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "dataset": "emas",
+  "grid": "emas_500m",
+  "cells": 5514,
+  "disscube": "0.4.0",
+  "comparisons": [
+    {
+      "nan_cells": 0,
+      "n": 5514,
+      "mean_abs_error": 0.01595937613347842,
+      "max_abs_error": 1.0,
+      "bias": -0.014871236851650345,
+      "pearson_r": 0.9370604566558705,
+      "share": 0.9840406238665216,
+      "label": "firebreak",
+      "expect": "match",
+      "limit": null,
+      "tol": 0,
+      "min_share": 0.98,
+      "note": "presence: DisSCube rasterizes lines through cell centres, TerraME marks every cell a line touches",
+      "passed": true
+    },
+    {
+      "nan_cells": 0,
+      "n": 5514,
+      "mean_abs_error": 0.002720348204570185,
+      "max_abs_error": 1.0,
+      "bias": -0.002720348204570185,
+      "pearson_r": 0.9883946796127335,
+      "share": 0.9972796517954298,
+      "label": "river",
+      "expect": "match",
+      "limit": null,
+      "tol": 0,
+      "min_share": 0.98,
+      "note": "presence, as above",
+      "passed": true
+    },
+    {
+      "nan_cells": 0,
+      "n": 5514,
+      "mean_abs_error": 0.03808487486398259,
+      "max_abs_error": 5.0,
+      "bias": 0.03808487486398259,
+      "pearson_r": 0.978659774289843,
+      "share": 0.9871236851650345,
+      "label": "maxcover",
+      "expect": "match",
+      "limit": null,
+      "tol": 0,
+      "min_share": 0.985,
+      "note": "max: pixels straddling a cell border count for both cells in DisSCube; TerraME assigns each pixel to the cell holding its centre",
+      "passed": true
+    },
+    {
+      "nan_cells": 0,
+      "n": 5514,
+      "mean_abs_error": 0.023213638012332245,
+      "max_abs_error": 5.0,
+      "bias": -0.023213638012332245,
+      "pearson_r": 0.9862576212332061,
+      "share": 0.9902067464635473,
+      "label": "mincover",
+      "expect": "match",
+      "limit": null,
+      "tol": 0,
+      "min_share": 0.985,
+      "note": "min, as above",
+      "passed": true
+    }
+  ],
+  "unsupported": []
+}

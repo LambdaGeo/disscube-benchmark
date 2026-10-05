@@ -10,8 +10,10 @@ name      = "majority"
 # Pinned to a luccme-goldens COMMIT, not a release: raw URLs by commit are immutable and no tag
 # is needed. When the goldens get their next release, change only the commit to the tag (the
 # bytes, and so the SHA-256, do not change).
-reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/4b7c7419bb809485f82c3bad9e0ce2e1b3f4ee36/goldens/fill/majority_terrame.csv"
-reference_sha256 = "8c9bf6ff53cfae4443196d6d11191526a8b5ca6b29f9e2615fdefe88c9ff3d90"
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/majority_terrame.csv"
+reference_sha256 = "8c9bf6ff53cfae4443196d6d11191526a8b5ca6b29f9e2615fdefe88c9ff3d90"   # luccme-goldens v1.1.0 (Zenodo 10.5281/zenodo.23161342)
+timing_url       = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/timing/timing_terrame.json"
+timing_sha256    = "a89a44ffadf1348a88ee79f7795854045b4fa71a57e53898f2a5bc21279f4b3f"
 grid      = "itaituba_5km"
 crs       = "EPSG:29191"
 

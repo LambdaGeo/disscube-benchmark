@@ -3,8 +3,10 @@
 
 [dataset]
 name      = "amazonia"
-reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.0.0/goldens/fill/amazonia_terrame.csv"
-reference_sha256 = "2203306cfd68b6c43fc6d06dc0cfc6ee3e9445e6e8e00fc476b56b07255620fa"   # luccme-goldens v1.0.0 (Zenodo 10.5281/zenodo.23107748)
+reference_url    = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/amazonia_terrame.csv"
+reference_sha256 = "2203306cfd68b6c43fc6d06dc0cfc6ee3e9445e6e8e00fc476b56b07255620fa"   # luccme-goldens v1.1.0 (Zenodo 10.5281/zenodo.23161342)
+timing_url       = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/timing/timing_terrame.json"
+timing_sha256    = "a89a44ffadf1348a88ee79f7795854045b4fa71a57e53898f2a5bc21279f4b3f"
 grid      = "amazonia_50km"
 crs       = "EPSG:29191"
 

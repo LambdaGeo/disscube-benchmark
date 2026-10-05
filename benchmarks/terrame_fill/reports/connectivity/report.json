@@ -1,0 +1,25 @@
+{
+  "dataset": "connectivity",
+  "grid": "br_25km",
+  "cells": 14255,
+  "disscube": "0.4.0",
+  "comparisons": [
+    {
+      "nan_cells": 0,
+      "n": 14255,
+      "mean_abs_error": 27.05668167948211,
+      "max_abs_error": 369.85669110984514,
+      "bias": -25.25089189800971,
+      "pearson_r": 0.9960070230713509,
+      "share": 0.5194668537355314,
+      "label": "cost",
+      "expect": "differs",
+      "limit": 85.0,
+      "tol": 25.0,
+      "min_share": 0.8,
+      "note": "GTC to ports: DisSCube (optimal Dijkstra lower bound) vs TerraME GPM (heuristic propagation)",
+      "passed": null
+    }
+  ],
+  "unsupported": []
+}

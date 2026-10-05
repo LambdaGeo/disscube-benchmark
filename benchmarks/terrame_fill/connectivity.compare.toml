@@ -10,8 +10,10 @@
 [dataset]
 name = "connectivity"
 reference = "connectivity_terrame.csv"
-reference_url = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/5095f20602f744179965304bdfed67a391de2b05/goldens/fill/connectivity_terrame.csv"
-reference_sha256 = "703be617538521002a7fa4a98a34b5f2957ad7624997c6e737683e82fd6e6fda"
+reference_url = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/fill/connectivity_terrame.csv"
+reference_sha256 = "703be617538521002a7fa4a98a34b5f2957ad7624997c6e737683e82fd6e6fda"   # luccme-goldens v1.1.0 (Zenodo 10.5281/zenodo.23161342)
+timing_url       = "https://raw.githubusercontent.com/LambdaGeo/luccme-goldens/v1.1.0/goldens/timing/timing_terrame.json"
+timing_sha256    = "a89a44ffadf1348a88ee79f7795854045b4fa71a57e53898f2a5bc21279f4b3f"
 grid = "br_25km"
 crs = "EPSG:5880"
 
