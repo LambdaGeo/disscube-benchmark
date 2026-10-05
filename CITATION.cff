@@ -23,7 +23,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-3972-7201"
     affiliation: "Universidade Federal do Maranhão (UFMA)"
 references:
-  - type: dataset
+  - type: data
     title: "luccme-goldens: Canonical Reference Execution Outputs for TerraME 2.0.1 and LuccME 3.1"
     version: v1.1.0
     doi: 10.5281/zenodo.23161342
