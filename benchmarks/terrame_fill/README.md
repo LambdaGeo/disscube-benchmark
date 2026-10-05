@@ -3,7 +3,7 @@
 Derives with DisSCube, **on the same grid**, the attributes of TerraME's `gis` *Fill* tutorial and
 compares them cell by cell with the golden cellular spaces published in
 [`LambdaGeo/luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) (`goldens/fill/`,
-release `v1.0.0`, Zenodo DOI 10.5281/zenodo.23107748).
+release `v1.1.0`, Zenodo DOI 10.5281/zenodo.23161342).
 
 | Dataset | Grid | TerraME fills | DisSCube operators |
 |---|---|---|---|
