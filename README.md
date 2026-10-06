@@ -130,6 +130,14 @@ TerraME's `mode` lists every tied class (`"7,87"`), and DisSCube's `majority` ke
 
 This comparison is **reported, not pass/fail**. The two tools use different methods: TerraME's `Network` (GPM) propagates costs over the road lines to build a route tree, whereas DisSCube computes the exact least cost with a multi-source Dijkstra over the road graph (`scipy.sparse.csgraph.dijkstra`), with the same ports, the same road layer and the same cost factors (`custo_ajus`, `outside = 2.0`). The correlation is high (r = 0.9960), so both preserve the regional pattern of accessibility, but they do **not** agree cell by cell, and **the cause of the difference is not yet established**.
 
+#### Visual comparison: spatial pattern preservation
+
+<p align="center">
+  <img src="benchmarks/terrame_fill/reports/connectivity/ports_connectivity.jpeg" width="92%" alt="Continental comparison of Generalized Transport Cost to ports: (A) DisSCube vs (B) TerraME 2.0.1" />
+</p>
+
+*Figure: Continental-scale comparison of Generalized Transport Cost (GTC) to 14 major Brazilian ports ($N = 14,255$ cells, 25 km resolution, SIRGAS 2000 Polyconic / EPSG:5880): **(A) DisSCube** (`network_cost` using exact multi-source Dijkstra); **(B) TerraME 2.0.1** (GPM `Network` using route tree propagation). Overlaid pink lines indicate the national road network (`br_roads_5880.shp`), and blue circles indicate destination ports. Both maps use identical classification thresholds: 3–129 (More connected / Very High), 129–249 (High), 249–466 (Medium), 466–797 (Low), and > 797 km-equivalents (Less connected / Very Low).*
+
 #### What the difference looks like
 
 Computed from the golden and the road layer used here:
