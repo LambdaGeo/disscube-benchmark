@@ -128,7 +128,7 @@ TerraME's `mode` lists every tied class (`"7,87"`), and DisSCube's `majority` ke
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `cost` | 14,255 | 27.1 km | 370 km | -25.3 km | 0.9960 | 51.9% | differs (reported only) |
 
-This comparison is **reported, not pass/fail**. The two tools use different methods: TerraME's `Network` (GPM) propagates costs over the road lines to build a route tree, whereas DisSCube computes the exact least cost with a multi-source Dijkstra over the road graph (`scipy.sparse.csgraph.dijkstra`), with the same ports, the same road layer and the same cost factors (`custo_ajus`, `outside = 2.0`). The correlation is high (r = 0.9960), so both preserve the regional pattern of accessibility, but they do **not** agree cell by cell, and **the cause of the difference is not yet established**.
+This comparison is **reported, not pass/fail**. The two tools use different methods: TerraME's `Network` (GPM) propagates costs over the road lines to build a route tree, whereas DisSCube computes the exact least cost with a multi-source Dijkstra over the road graph (`scipy.sparse.csgraph.dijkstra`), with the same ports, the same road layer and the same cost factors (`custo_ajus`, `outside = 2.0`). The correlation is high (r = 0.9960), so both preserve the regional pattern of accessibility, but they do **not** agree cell by cell, and the difference is already in the costs of the nodes of TerraME's network (see **Open** below).
 
 #### Visual comparison: where the two surfaces differ
 
@@ -161,11 +161,18 @@ These checks rebuild TerraME's documented rules (read from the GPM source) in Py
 | Two ports attached to the same road (TerraME keeps one target per line) | Not the cause: the 14 ports are on 14 different roads |
 | How a cell and a port enter the network | Explains part of it: entering as TerraME does (closest line, foot of the perpendicular, nearest end) reduces the cells where TerraME is lower from 15.3% to about 2%, but it does not change the recurring offsets |
 
-#### Open
+#### Open: where the difference arises
 
-The recurring negative offsets are still unexplained. The leading candidate is a suboptimal route chosen by TerraME at specific points of its propagation, but this is **not verified**: it requires TerraME's own per-node costs, which the golden does not contain. Until then, read the `connectivity` row as a documented difference between two methods, **not** as evidence that either tool is correct or incorrect.
+TerraME's per-node costs were exported (`network.netpoints`, `benchmarks/terrame_fill/node_cost/`) and compared with the exact Dijkstra over the same road graph. The difference is already in the costs of the nodes, before any cell is connected to the network:
 
-<!-- TODO: after exporting per-node costs from TerraME (network.netpoints) and comparing them node by node with the exact Dijkstra, replace this subsection with the result and, if confirmed, name the mechanism. -->
+- **Shortest-path condition.** In an exact solution, two nodes joined by a road segment cannot differ in cost by more than the cost of the segment. DisSCube meets this in all 120,292 segments. In TerraME's `Network` (gpm 0.6, TerraME 2.0.1) 827 or 828 segments (0.69%, tolerance 0.001 km) do not, by up to 247.6 km; all of them are the first or last segment of a line, where two lines meet.
+- **Node costs.** Over the 116,824 nodes present in both graphs, TerraME is higher than DisSCube in most nodes (mean difference −10.0 km, DisSCube minus TerraME) and DisSCube is never higher by more than 1.87 km. Rebuilding the cell costs with the vertex rule from TerraME's own node costs reproduces the golden (mean absolute error 1.14 km), so the cell rule is not what separates the two.
+- **What it does not depend on.** One port alone still gives 494 to 720 segments out of the condition; a network of 8 lines and 1 port reproduces the behaviour (`node_cost/case_minimal/`); translating, rotating or scaling the coordinates of that small network does not remove it.
+- **What it depends on.** The order of the lines in the shapefile: reversing it gives 1,286 segments, and four random orders gave 434 to 508. An exact shortest path does not depend on the order. Six identical runs of the same script gave 827 (four times) or 828 (twice), with one node changing by up to 27 km; the cause of that small variation was not investigated.
+- **One traced case.** The largest break (247.6 km) was followed in the code of `Network.lua`: a lower cost that reaches the end of a line along its own chain is not carried across the junction (`validateCircularPrevious`, branch "simple node, previous is a router"). Record: `node_cost/case_247km/`. A local change to that branch repairs the case but raises the count from 827 to 873, so the general mechanism is not established and no correction is proposed here.
+- **Other implementations.** The same graph solved by repeated relaxation until no node improves (the algorithm of the R package `aRT`, reimplemented in `node_cost/art_gpm_costs.py`) breaks the condition in 0 segments. `lua/Network.lua` of github.com/TerraME/gpm (version 0.6, last commit 6 December 2019) is identical to the file used here.
+
+This does not say which surface suits a given model: the `cost` variable is a documented difference between two methods, and its effect on any land-use result was not measured. The case is offered to the TerraME/gpm developers for joint examination.
 
 #### Note on the input layer
 
