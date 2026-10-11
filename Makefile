@@ -9,7 +9,7 @@ DATASET ?= itaituba
 DATASETS := itaituba amazonia emas majority connectivity
 REPS ?= 5
 
-.PHONY: help validate run compare benchmark benchmark-all timing clean
+.PHONY: help validate run compare benchmark benchmark-all timing figure figure-operators clean
 
 help:
 	@echo "disscube-benchmark — Command Reference"
@@ -21,6 +21,8 @@ help:
 	@echo "  make run DATASET=...        Run data cube derivation without comparing"
 	@echo "  make compare DATASET=...    Run comparison against goldens (requires cube run)"
 	@echo "  make timing DATASET=... REPS=5  Time/peak memory of the DisSCube run (+ pinned TerraME reference)"
+	@echo "  make figure                 Figure of the connectivity case (needs: make run DATASET=connectivity)"
+	@echo "  make figure-operators       Figure of four operators, DisSCube vs TerraME (needs: make run DATASET=itaituba and DATASET=majority)"
 	@echo "  make clean                  Remove generated workspaces and test reports"
 
 validate:
@@ -61,6 +63,14 @@ benchmark-all:
 timing:
 	@echo "==> Timing DisSCube for $(DATASET)..."
 	python benchmarks/terrame_fill/timing.py $(DATASET) --reps $(REPS)
+
+figure:
+	@echo "==> Figure: transport cost to ports, DisSCube vs TerraME..."
+	python benchmarks/terrame_fill/figure_connectivity.py --workspace benchmarks/terrame_fill/data/connectivity --out benchmarks/terrame_fill/reports/connectivity/fig_connectivity_cost.png
+
+figure-operators:
+	@echo "==> Figure: four operators, DisSCube vs TerraME..."
+	python benchmarks/terrame_fill/figure_operators.py --out benchmarks/terrame_fill/reports/operators/fig_operators.png
 
 clean:
 	rm -rf benchmarks/terrame_fill/data benchmarks/terrame_fill/reports benchmarks/terrame_fill/__pycache__

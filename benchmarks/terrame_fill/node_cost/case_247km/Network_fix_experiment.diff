@@ -1,0 +1,46 @@
+--- Network.lua.orig	2026-10-10 18:40:27.729692253 -0300
++++ bionic/opt/terrame/bin/packages/gpm/lua/Network.lua	2026-10-10 18:48:47.837444264 -0300
+@@ -690,8 +690,8 @@
+ 		end
+ 	elseif prev.router then
+ 		for i = 1, #prev.previous do
+-			if isPreviousCircular(node, prev.previous[i]) then
+-				return "SIMPLE_ROUTER", nil, i
++			if node.previous and node.previous.id == prev.id and prev.previous[i].id == node.id then
++				return "SIMPLE_ROUTER_FIX", nil, i
+ 			end
+ 		end
+ 	elseif isPreviousCircular(node, prev) then
+@@ -759,6 +759,32 @@
+ 
+ local function reviewCircularPrevious(node, prev, graph)
+ 	local link, _, j = validateCircularPrevious(node, prev)
++	if link == "SIMPLE_ROUTER_FIX" then
++		local previous = prev
++		local fixed = {pos = previous.pos, line = previous.line}
++		if previous.id == node.line.geom:getPointAsTextAt(0) then
++			fixed.pos = 0; fixed.line = node.line
++		elseif previous.id == node.line.geom:getPointAsTextAt(node.line.npoints - 1) then
++			fixed.pos = node.line.npoints - 1; fixed.line = node.line
++		end
++		local distance = calculateFullDistance(node, previous.point, fixed.line)
++		if previous.distance > distance then
++			local prevNext = previous.next
++			previous.distance = distance
++			previous.next = node
++			previous.targetId = node.targetId
++			previous.pos = fixed.pos
++			previous.line = fixed.line
++			removeNodeFromRouter(previous, node)
++			if previous.router then
++				insertPreviousNodeOnRouter(previous, prevNext)
++			else
++				addPreviousNode(previous, prevNext)
++			end
++			reviewPreviousNodes(previous, graph)
++		end
++		return
++	end
+ 	if link then
+ 		if (link == "ROUTER_ROUTER") or (link == "SIMPLE_ROUTER") then
+ 			-- TODO(avancinirodrigo): no test data for this
