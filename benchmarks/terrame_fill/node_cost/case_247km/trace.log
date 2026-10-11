@@ -1,0 +1,85 @@
+00001 v0 of 16529      CREATED distance=632.976 line=line 16557 pos=19 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416
+00002 v0 of 16529      targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00003 v0 of 16529      next = node[632.9]   @ __newindex:240 < ?:1075 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00004 v3 of 16529      CREATED distance=633.824 line=line 16566 pos=3 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416
+00005 v3 of 16529      targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00006 v3 of 16529      next = node[633.6]   @ __newindex:240 < ?:1075 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00007 A(v4 of 16529)   CREATED distance=634.557 line=line 16566 pos=4 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416
+00008 A(v4 of 16529)   targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00009 A(v4 of 16529)   next = v3 of 16529[633.8]   @ __newindex:240 < ?:1075 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00010 J                CREATED distance=635.270 line=line 16566 pos=5 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416
+00011 J                targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00012 J                next = A(v4 of 16529)[634.6]   @ __newindex:240 < ?:1075 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00013 v2 of 16534      CREATED distance=635.655 line=line 16571 pos=2.0 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418
+00014 v2 of 16534      targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418 < addAdjacentLinesAndItsPoints:1444
+00015 v2 of 16534      next = J[635.3]   @ __newindex:240 < ?:1075 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418 < addAdjacentLinesAndItsPoints:1444
+00016 v0 of 16534      CREATED distance=636.180 line=line 16571 pos=0.0 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418
+00017 v0 of 16534      targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418 < addAdjacentLinesAndItsPoints:1444
+00018 v0 of 16534      next = node[635.8]   @ __newindex:240 < ?:1075 < addAllNodesOfLineBackward:1099 < addNodesInDirection:1418 < addAdjacentLinesAndItsPoints:1444
+00019 v1 of 16530      CREATED distance=635.970 line=line 16567 pos=1 target=1   @ ?:231 < createNodeByNextPoint:731 < ?:1071 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416
+00020 v1 of 16530      targetId = 1   @ __newindex:240 < ?:1074 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00021 v1 of 16530      next = J[635.3]   @ __newindex:240 < ?:1075 < addAllNodesOfLineForward:1118 < addNodesInDirection:1416 < addAdjacentLinesAndItsPoints:1442
+00022 v0 of 16534      distance 636.180 -> 579.119   (line line 16571, next node[635.8])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00023 v0 of 16534      next = node[578.0]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00024 v0 of 16534      targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00025 v0 of 16534      line = line 16597   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00026 v0 of 16534      pos = 4.0   @ __newindex:240 < reviewNextNodes:968 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00027 v2 of 16534      distance 635.655 -> 579.644   (line line 16571, next J[635.3])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00028 v2 of 16534      next = node[579.5]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00029 v2 of 16534      targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00030 v2 of 16534      line = line 16571   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00031 J                distance 635.270 -> 580.030   (line line 16566, next A(v4 of 16529)[634.6])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00032 J                next = v2 of 16534[579.6]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00033 J                targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00034 J                line = line 16571   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00035 J                pos = 3.0   @ __newindex:240 < reviewNextNodes:968 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00036 v1 of 16530      distance 635.970 -> 580.730   (line line 16567, next J[580.0])   @ __newindex:238 < reviewPreviousNodes:939 < reviewNextNodes:980 < reviewNextNodes:990 < reviewNextNodes:990
+00037 v1 of 16530      targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewNextNodes:980 < reviewNextNodes:990 < reviewNextNodes:990
+00038 A(v4 of 16529)   distance 634.557 -> 580.742   (line line 16566, next v3 of 16529[633.8])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00039 A(v4 of 16529)   next = J[580.0]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00040 A(v4 of 16529)   targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00041 A(v4 of 16529)   line = line 16566   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00042 v3 of 16529      distance 633.824 -> 581.475   (line line 16566, next node[633.6])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00043 v3 of 16529      next = A(v4 of 16529)[580.7]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00044 v3 of 16529      targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00045 v3 of 16529      line = line 16566   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00046 v0 of 16529      distance 632.976 -> 582.324   (line line 16557, next node[632.9])   @ __newindex:238 < reviewNextNodes:959 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00047 v0 of 16529      next = node[581.8]   @ __newindex:240 < reviewNextNodes:960 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00048 v0 of 16529      targetId = 7   @ __newindex:240 < reviewNextNodes:961 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00049 v0 of 16529      line = line 16566   @ __newindex:240 < reviewNextNodes:962 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00050 v0 of 16529      pos = 0   @ __newindex:240 < reviewNextNodes:966 < reviewNextNodes:990 < reviewNextNodes:990 < reviewNextNodes:990
+00051 ?                RCP node=node[330.0] prev=v0 of 16529[582.3] link=SIMPLE_SIMPLE node.previous=simple->v0 of 16529[582.3] prev.previous=simple->node[330.0]   @ reviewCircularPrevious:840 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00052 v0 of 16529      distance 582.324 -> 330.092   (line line 16566, next node[581.8])   @ __newindex:238 < reviewCircularPrevious:892 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00053 v0 of 16529      next = node[330.0]   @ __newindex:240 < reviewCircularPrevious:893 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00054 v0 of 16529      targetId = 7   @ __newindex:240 < reviewCircularPrevious:894 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00055 v0 of 16529      pos = 19.0   @ __newindex:240 < reviewCircularPrevious:900 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00056 v0 of 16529      line = line 16557   @ __newindex:240 < reviewCircularPrevious:901 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00057 v0 of 16529      RCP node=v0 of 16529[330.1] prev=node[581.8] link=SIMPLE_SIMPLE node.previous=simple->node[581.8] prev.previous=simple->v0 of 16529[330.1]   @ reviewCircularPrevious:840 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00058 ?                RCP node=node[330.7] prev=v3 of 16529[581.5] link=SIMPLE_SIMPLE node.previous=simple->v3 of 16529[581.5] prev.previous=simple->node[330.7]   @ reviewCircularPrevious:840 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00059 v3 of 16529      distance 581.475 -> 330.941   (line line 16566, next A(v4 of 16529)[580.7])   @ __newindex:238 < reviewCircularPrevious:892 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00060 v3 of 16529      next = node[330.7]   @ __newindex:240 < reviewCircularPrevious:893 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00061 v3 of 16529      targetId = 7   @ __newindex:240 < reviewCircularPrevious:894 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00062 v3 of 16529      pos = 3   @ __newindex:240 < reviewCircularPrevious:900 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00063 v3 of 16529      line = line 16566   @ __newindex:240 < reviewCircularPrevious:901 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00064 v3 of 16529      RCP node=v3 of 16529[330.9] prev=A(v4 of 16529)[580.7] link=SIMPLE_SIMPLE node.previous=simple->A(v4 of 16529)[580.7] prev.previous=simple->v3 of 16529[330.9]   @ reviewCircularPrevious:840 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00065 A(v4 of 16529)   distance 580.742 -> 331.674   (line line 16566, next J[580.0])   @ __newindex:238 < reviewCircularPrevious:892 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00066 A(v4 of 16529)   next = v3 of 16529[330.9]   @ __newindex:240 < reviewCircularPrevious:893 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00067 A(v4 of 16529)   targetId = 7   @ __newindex:240 < reviewCircularPrevious:894 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00068 A(v4 of 16529)   pos = 4   @ __newindex:240 < reviewCircularPrevious:900 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00069 A(v4 of 16529)   line = line 16566   @ __newindex:240 < reviewCircularPrevious:901 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00070 A(v4 of 16529)   RCP node=A(v4 of 16529)[331.7] prev=J[580.0] link=nil node.previous=simple->J[580.0] prev.previous=ROUTER{v1 of 16530[580.7],A(v4 of 16529)[331.7]}   @ reviewCircularPrevious:840 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912 < reviewCircularPrevious:912
+00071 v0 of 16534      distance 579.119 -> 577.203   (line line 16597, next node[576.1])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:927
+00072 v0 of 16534      targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:927
+00073 v2 of 16534      distance 579.644 -> 577.728   (line line 16571, next node[577.6])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:927 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00074 v2 of 16534      targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:927 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00075 J                distance 580.030 -> 578.114   (line line 16571, next v2 of 16534[577.7])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:941 < reviewPreviousNodes:927 < reviewPreviousNodes:941
+00076 J                targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:941 < reviewPreviousNodes:927 < reviewPreviousNodes:941
+00077 v1 of 16530      distance 580.730 -> 578.814   (line line 16567, next J[578.1])   @ __newindex:238 < reviewPreviousNodes:925 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:927
+00078 v1 of 16530      targetId = 7   @ __newindex:240 < reviewPreviousNodes:926 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:927
+00079 v0 of 16529      distance 330.092 -> 328.177   (line line 16557, next node[328.1])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00080 v0 of 16529      targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00081 v3 of 16529      distance 330.941 -> 329.025   (line line 16566, next node[328.8])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00082 v3 of 16529      targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00083 A(v4 of 16529)   distance 331.674 -> 329.758   (line line 16566, next v3 of 16529[329.0])   @ __newindex:238 < reviewPreviousNodes:939 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00084 A(v4 of 16529)   targetId = 7   @ __newindex:240 < reviewPreviousNodes:940 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941
+00085 A(v4 of 16529)   RCP node=A(v4 of 16529)[329.8] prev=J[578.1] link=nil node.previous=simple->J[578.1] prev.previous=ROUTER{v1 of 16530[578.8],A(v4 of 16529)[329.8]}   @ reviewCircularPrevious:840 < reviewPreviousNodes:943 < reviewPreviousNodes:941 < reviewPreviousNodes:941 < reviewPreviousNodes:941

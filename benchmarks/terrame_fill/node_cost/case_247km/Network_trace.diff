@@ -1,0 +1,116 @@
+--- Network.lua.orig	2026-10-10 18:40:27.729692253 -0300
++++ bionic/opt/terrame/bin/packages/gpm/lua/Network.lua	2026-10-10 18:43:43.518643329 -0300
+@@ -156,7 +156,7 @@
+ 	targetLines[targetLine.id] = targetLine
+ end
+ 
+-local function createTargetNode(point, distance, line, targetId, targetPoint)
++local function createTargetNode_(point, distance, line, targetId, targetPoint)
+ 	return {
+ 		target = true,
+ 		id = point:asText(),
+@@ -169,7 +169,7 @@
+ 	}
+ end
+ 
+-local function createNode(point, distance, line, position, targetId)
++local function createNode_(point, distance, line, position, targetId)
+ 	return {
+ 		id = point:asText(),
+ 		point = point,
+@@ -180,6 +180,74 @@
+ 	}
+ end
+ 
++
++-- ===== TRACE (diagnostic copy, not part of GPM) =====
++local TRACE_WATCH = {
++	{4916685.91, 9709263.31, "J"},
++	{4915052.14, 9706076.48, "A(v4 of 16529)"},
++	{4913174.11, 9702909.70, "v3 of 16529"},
++	{4911187.88, 9699317.56, "v0 of 16529"},
++	{4919632.72, 9707341.41, "v1 of 16530"},
++	{4919087.41, 9711350.36, "v0 of 16534"},
++	{4918579.81, 9708852.71, "v2 of 16534"},
++}
++local traceFile = io.open("trace.log", "w")
++local traceSeq = 0
++local function traceLabel(id)
++	local x, y = string.match(string.lower(id), "point%s*%(([%d%.%-]+)%s+([%d%.%-]+)%)")
++	if not x then return nil end
++	x, y = tonumber(x), tonumber(y)
++	for _, w in ipairs(TRACE_WATCH) do
++		if math.abs(w[1] - x) < 0.02 and math.abs(w[2] - y) < 0.02 then return w[3] end
++	end
++end
++local function traceShort(v)
++	if type(v) == "table" then
++		if v.id and type(v.id) == "string" and string.match(string.lower(v.id), "point") then
++			return (traceLabel(v.id) or "node") .. "[" .. string.format("%.1f", v.distance or -1) .. "]"
++		elseif v.id then return "line " .. tostring(v.id) end
++		return "table"
++	end
++	return tostring(v)
++end
++local function traceWhere()
++	local out = {}
++	for lvl = 3, 7 do
++		local info = debug.getinfo(lvl, "nSl")
++		if not info then break end
++		table.insert(out, (info.name or "?") .. ":" .. info.currentline)
++	end
++	return table.concat(out, " < ")
++end
++local function traceLog(label, msg)
++	traceSeq = traceSeq + 1
++	traceFile:write(string.format("%05d %-16s %s   @ %s\n", traceSeq, label, msg, traceWhere()))
++	traceFile:flush()
++end
++local function traceWrap(node)
++	local label = traceLabel(node.id)
++	if not label then return node end
++	local real = node
++	traceLog(label, string.format("CREATED distance=%.3f line=%s pos=%s target=%s", real.distance, traceShort(real.line), tostring(real.pos), tostring(real.targetId)))
++	local watched = {distance = true, next = true, line = true, targetId = true, pos = true}
++	return setmetatable({}, {
++		__index = real,
++		__newindex = function(_, k, v)
++			if watched[k] then
++				if k == "distance" then
++					traceLog(label, string.format("distance %.3f -> %.3f   (line %s, next %s)", real.distance or -1, v, traceShort(real.line), traceShort(real.next)))
++				else
++					traceLog(label, k .. " = " .. traceShort(v))
++				end
++			end
++			real[k] = v
++		end
++	})
++end
++local function createTargetNode(...) return traceWrap(createTargetNode_(...)) end
++local function createNode(...) return traceWrap(createNode_(...)) end
++-- ===== END TRACE =====
++
+ local function findClosestLine(point)
+ 	local minDistance = math.huge
+ 	local closestLine
+@@ -757,8 +825,20 @@
+ 	end
+ end
+ 
++local function pdesc(n)
++	if not n then return "nil" end
++	if n.router then
++		local t = {}
++		for i = 1, #n.previous do t[#t+1] = traceShort(n.previous[i]) end
++		return "ROUTER{" .. table.concat(t, ",") .. "}"
++	end
++	return "simple->" .. traceShort(n.previous)
++end
+ local function reviewCircularPrevious(node, prev, graph)
+ 	local link, _, j = validateCircularPrevious(node, prev)
++	if traceLabel(node.id) or traceLabel(prev.id) then
++		traceLog(traceLabel(node.id) or "?", "RCP node=" .. traceShort(node) .. " prev=" .. traceShort(prev) .. " link=" .. tostring(link) .. " node.previous=" .. pdesc(node) .. " prev.previous=" .. pdesc(prev))
++	end
+ 	if link then
+ 		if (link == "ROUTER_ROUTER") or (link == "SIMPLE_ROUTER") then
+ 			-- TODO(avancinirodrigo): no test data for this
