@@ -44,3 +44,15 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# extracted from shapefiles.zip
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+terraview/*.shp
+terraview/*.shx
+terraview/*.dbf
+terraview/*.prj
+terraview/*.cpg
