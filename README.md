@@ -130,13 +130,15 @@ TerraME's `mode` lists every tied class (`"7,87"`), and DisSCube's `majority` ke
 
 This comparison is **reported, not pass/fail**. The two tools use different methods: TerraME's `Network` (GPM) propagates costs over the road lines to build a route tree, whereas DisSCube computes the exact least cost with a multi-source Dijkstra over the road graph (`scipy.sparse.csgraph.dijkstra`), with the same ports, the same road layer and the same cost factors (`custo_ajus`, `outside = 2.0`). The correlation is high (r = 0.9960), so both preserve the regional pattern of accessibility, but they do **not** agree cell by cell, and **the cause of the difference is not yet established**.
 
-#### Visual comparison: spatial pattern preservation
+#### Visual comparison: where the two surfaces differ
 
 <p align="center">
-  <img src="benchmarks/terrame_fill/reports/connectivity/ports_connectivity.jpeg" width="92%" alt="Continental comparison of Generalized Transport Cost to ports: (A) DisSCube vs (B) TerraME 2.0.1" />
+  <img src="benchmarks/terrame_fill/reports/connectivity/fig_connectivity_cost.png" width="92%" alt="Generalized transport cost to the nearest port: (A) DisSCube, (B) TerraME 2.0.1, (C) DisSCube minus TerraME" />
 </p>
 
-*Figure: Continental-scale comparison of Generalized Transport Cost (GTC) to 14 major Brazilian ports ($N = 14,255$ cells, 25 km resolution, SIRGAS 2000 Polyconic / EPSG:5880): **(A) DisSCube** (`network_cost` using exact multi-source Dijkstra); **(B) TerraME 2.0.1** (GPM `Network` using route tree propagation). Overlaid pink lines indicate the national road network (`br_roads_5880.shp`), and blue circles indicate destination ports. Both maps use identical classification thresholds: 3–129 (More connected / Very High), 129–249 (High), 249–466 (Medium), 466–797 (Low), and > 797 km-equivalents (Less connected / Very Low).*
+*Figure: Generalized Transport Cost (GTC) to 14 major Brazilian ports ($N = 14,255$ cells, 25 km resolution, SIRGAS 2000 Polyconic / EPSG:5880): **(A) DisSCube** (`network_cost`, exact multi-source Dijkstra); **(B) TerraME 2.0.1** (GPM `Network`, the golden of `luccme-goldens`); **(C) DisSCube minus TerraME**, in km (blue: DisSCube lower; red: DisSCube higher). Pink lines are the national road network (`br_roads_5880.shp`) and blue circles are the ports. A and B use the same cells and the same classes: 3–129, 129–249, 249–466, 466–797 and 797–2,519 km. The classes of C, with the share of cells in each: below −100 km (4.4%), −100 to −25 (43.1%), −25 to −5 (20.8%), −5 to 5 (30.6%), 5 to 25 (0.6%) and above 25 (0.5%). The view stops at the mainland; islands are in the data and in the comparison. Regenerate with `make run DATASET=connectivity` and `make figure`.*
+
+A and B look alike (r = 0.9960), and C shows what the table above reports: DisSCube is lower than TerraME in most cells, and by more than 100 km in 4.4% of them. The figure shows where the two surfaces differ, not which one is right.
 
 #### What the difference looks like
 
@@ -219,6 +221,16 @@ pip install -r requirements.txt
 ```bash
 make validate
 ```
+
+### Four operators side by side (Itaituba, 31 × 20 cells of 5 km, EPSG:29191)
+
+<p align="center">
+  <img src="benchmarks/terrame_fill/reports/operators/fig_operators.png" width="92%" alt="Four DisSCube operators (mean, percentage, distance, majority) against TerraME Fill: top row DisSCube, bottom row TerraME" />
+</p>
+
+*Figure: top row, DisSCube; bottom row, the TerraME Fill golden, on the same cells and with the same colour limits. Columns: `mean` (elevation, m), `percentage` (share of the cell in deforestation class 87), `distance` (km to the nearest road) and `majority` (predominant class). Under each column, the largest absolute difference (the share of agreeing cells for `majority`). In `distance`, 94.5% of the cells are within 100 m and the largest difference, 1.88 km, is in isolated cells (see the table of `itaituba`).*
+
+Regenerate with `make run DATASET=itaituba`, `make run DATASET=majority` and `make figure-operators`.
 
 ### Run the benchmarks
 
