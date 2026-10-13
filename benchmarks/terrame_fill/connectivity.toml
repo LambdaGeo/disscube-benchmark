@@ -23,7 +23,7 @@ id = "roads"
 type = "file"
 path = "terrame_fill/br_roads_5880.shp"
 crs = "EPSG:5880"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_roads_5880.shp"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_roads_5880.shp"
 sha256 = "3eb5bd04e2ee2f979f53baeffc692b52b37dd22f29b34a433c3a1d529fa2168c"
 
 [[source]]
@@ -32,7 +32,7 @@ type = "file"
 path = "terrame_fill/br_roads_5880.shx"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_roads_5880.shx"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_roads_5880.shx"
 sha256 = "d5262c90cb08887f8cedc3a452e58e270ec666355e04b883f49a4ed9c4ab5cdc"
 
 [[source]]
@@ -41,7 +41,7 @@ type = "file"
 path = "terrame_fill/br_roads_5880.dbf"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_roads_5880.dbf"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_roads_5880.dbf"
 sha256 = "88c6ab692f8f2d383e4ba46732fb57bebd2006f93dc6fd6fa8fa9ddbda314e7f"
 
 [[source]]
@@ -50,7 +50,7 @@ type = "file"
 path = "terrame_fill/br_roads_5880.prj"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_roads_5880.prj"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_roads_5880.prj"
 sha256 = "55d89034603a7c6f432d2d505f132e9ee55bd84ed239d42a34ca4707bb2b13a6"
 
 [[source]]
@@ -58,7 +58,7 @@ id = "ports"
 type = "file"
 path = "terrame_fill/br_ports_5880.shp"
 crs = "EPSG:5880"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_ports_5880.shp"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_ports_5880.shp"
 sha256 = "82355d997ce18ee546ba67037190345ed3c725133d958044ce9064f621a44af0"
 
 [[source]]
@@ -67,7 +67,7 @@ type = "file"
 path = "terrame_fill/br_ports_5880.shx"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_ports_5880.shx"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_ports_5880.shx"
 sha256 = "a99f3a89a84d5872bcb98f902485d4a6844428307738f948c0c0cbca044b2cc7"
 
 [[source]]
@@ -76,7 +76,7 @@ type = "file"
 path = "terrame_fill/br_ports_5880.dbf"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_ports_5880.dbf"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_ports_5880.dbf"
 sha256 = "bdfede1b5098a4599e7679a03b4ca5e33c8173bdf4bdf70efbab4a122acc49ad"
 
 [[source]]
@@ -85,7 +85,7 @@ type = "file"
 path = "terrame_fill/br_ports_5880.prj"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_ports_5880.prj"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_ports_5880.prj"
 sha256 = "55d89034603a7c6f432d2d505f132e9ee55bd84ed239d42a34ca4707bb2b13a6"
 
 [[source]]
@@ -93,7 +93,7 @@ id = "cells"
 type = "file"
 path = "terrame_fill/br_cs_5880_25x25km.shp"
 crs = "EPSG:5880"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_cs_5880_25x25km.shp"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_cs_5880_25x25km.shp"
 sha256 = "6530de925a71ad6250f3aa1ec49ac2b1ebba6333df303d146f91be740c083364"
 
 [[source]]
@@ -102,7 +102,7 @@ type = "file"
 path = "terrame_fill/br_cs_5880_25x25km.shx"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_cs_5880_25x25km.shx"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_cs_5880_25x25km.shx"
 sha256 = "c970849fa1a45ea42328a982737af36c0b4af6d67b7d6b174a95cd0511f5243f"
 
 [[source]]
@@ -111,7 +111,7 @@ type = "file"
 path = "terrame_fill/br_cs_5880_25x25km.dbf"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_cs_5880_25x25km.dbf"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_cs_5880_25x25km.dbf"
 sha256 = "0963b92647ebef9fda4f19d73ebf3ecbf647669d1c939647729e1ee820e77a16"
 
 [[source]]
@@ -120,7 +120,7 @@ type = "file"
 path = "terrame_fill/br_cs_5880_25x25km.prj"
 crs = "EPSG:5880"
 format = "vector"
-url = "https://raw.githubusercontent.com/TerraME/gpm/master/data/br_cs_5880_25x25km.prj"
+url = "https://raw.githubusercontent.com/TerraME/gpm/3aa0e91498f37d1b55adbe54d5d0fda3137f251f/data/br_cs_5880_25x25km.prj"
 sha256 = "55d89034603a7c6f432d2d505f132e9ee55bd84ed239d42a34ca4707bb2b13a6"
 
 [[derive]]
