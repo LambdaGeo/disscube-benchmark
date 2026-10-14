@@ -1,6 +1,6 @@
 # emas: DisSCube vs TerraME Fill
 
-5514 cells, grid `emas_500m`, DisSCube 0.4.0.
+5514 cells, grid `emas_500m`, DisSCube 0.6.0.
 
 | variable | cells | mean |err| | max |err| | bias | r | within tol | criterion | status |
 |---|---|---|---|---|---|---|---|---|

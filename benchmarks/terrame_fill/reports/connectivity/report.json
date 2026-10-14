@@ -2,7 +2,7 @@
   "dataset": "connectivity",
   "grid": "br_25km",
   "cells": 14255,
-  "disscube": "0.4.0",
+  "disscube": "0.6.0",
   "comparisons": [
     {
       "nan_cells": 0,
@@ -10,7 +10,7 @@
       "mean_abs_error": 27.05668167948211,
       "max_abs_error": 369.85669110984514,
       "bias": -25.25089189800971,
-      "pearson_r": 0.9960070230713509,
+      "pearson_r": 0.9960070230713505,
       "share": 0.5194668537355314,
       "label": "cost",
       "expect": "differs",

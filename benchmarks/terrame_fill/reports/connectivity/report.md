@@ -1,6 +1,6 @@
 # connectivity: DisSCube vs TerraME Fill
 
-14255 cells, grid `br_25km`, DisSCube 0.4.0.
+14255 cells, grid `br_25km`, DisSCube 0.6.0.
 
 | variable | cells | mean |err| | max |err| | bias | r | within tol | criterion | status |
 |---|---|---|---|---|---|---|---|---|

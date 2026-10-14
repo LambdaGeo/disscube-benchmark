@@ -2,7 +2,7 @@
   "dataset": "majority",
   "grid": "itaituba_5km",
   "cells": 620,
-  "disscube": "0.4.0",
+  "disscube": "0.6.0",
   "comparisons": [
     {
       "nan_cells": 0,

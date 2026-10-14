@@ -1,6 +1,6 @@
 # itaituba: DisSCube vs TerraME Fill
 
-620 cells, grid `itaituba_5km`, DisSCube 0.4.0.
+620 cells, grid `itaituba_5km`, DisSCube 0.6.0.
 
 | variable | cells | mean |err| | max |err| | bias | r | within tol | criterion | status |
 |---|---|---|---|---|---|---|---|---|

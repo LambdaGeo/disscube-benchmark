@@ -39,7 +39,7 @@ Every artifact in the chain is versioned, hashed and, where applicable, archived
 
 | Level | Artifact | What it provides | Pinned version | Identifier |
 | --- | --- | --- | --- | --- |
-| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | commit `66bfc70` (`network_cost`, `sum` with `area=true`; PyPI latest is 0.4.0) | release pending |
+| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | `0.6.0` (PyPI; `network_cost`, `sum` with `area=true`) | DOI [10.5281/zenodo.23365403](https://doi.org/10.5281/zenodo.23365403) |
 | Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) and TerraME timing | `v1.1.0` | DOI [10.5281/zenodo.23161342](https://doi.org/10.5281/zenodo.23161342) |
 | Reference generator | [`terrame-docker`](https://github.com/profsergiocosta/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `0.4.2` | `sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c`; DOI [10.5281/zenodo.23160784](https://doi.org/10.5281/zenodo.23160784) |
 | Benchmark | this repository | Pipelines, comparison specs, metrics engine | `v1.1.0` | DOI: assigned at release (v1.0.2: [10.5281/zenodo.23163168](https://doi.org/10.5281/zenodo.23163168)) |
@@ -77,7 +77,7 @@ For every variable with a non-exact result, the cause of the difference is docum
 
 ## 4. Quantitative parity results
 
-Obtained with DisSCube at commit `66bfc70` against the `luccme-goldens` `v1.1.0` goldens (TerraME 2.0.1, LuccME 3.1, image `terrame-luccme` 0.4.2).
+Obtained with DisSCube 0.6.0 against the `luccme-goldens` `v1.1.0` goldens (TerraME 2.0.1, LuccME 3.1, image `terrame-luccme` 0.4.2).
 The tables are produced by `compare.py` (`make benchmark-all`), and CI publishes them in each job summary. Coverage values are fractions (0–1), as in the goldens.
 
 ### Itaituba (31 × 20 cells, 5 km, EPSG:29191)
@@ -203,7 +203,7 @@ Differences below come from how each platform defines the operation, not from er
 Numerical results of spatial operations can depend on library versions (GEOS, GDAL, rasterio, shapely). To keep the comparison stable:
 
 - DisSCube and the goldens are pinned to the versions in section 2.
-- Python dependencies are in `requirements.txt`. DisSCube is pinned to commit `66bfc70`, which adds `network_cost` (needed by `connectivity`; not in PyPI 0.4.0). Replace the pin with the release when available. <!-- TODO: lock file or Dockerfile for the benchmark -->
+- Python dependencies are in `requirements.txt`. DisSCube is pinned to the release 0.6.0 (it replaces the commit `66bfc70` used before the release; the results in section 4 are the same). <!-- TODO: lock file or Dockerfile for the benchmark -->
 - Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256 on every run.
 
 <!-- TODO: if report.json does not yet record library versions (disscube, numpy, scipy, rasterio, shapely, GDAL, GEOS), add them, so any difference between machines can be traced. -->
