@@ -5,6 +5,7 @@ title: "disscube-benchmark: Quantitative Numerical and Spatial Parity Benchmark 
 abstract: "Automated benchmarking suite and continuous integration harness measuring cell-by-cell numerical parity, spatial metrics, and residual divergence between declarative data cube operators in DisSCube and canonical TerraME 2.0.1 goldens."
 version: 1.1.0
 date-released: 2026-10-13
+doi: "10.5281/zenodo.23366475"
 license: MIT
 url: "https://github.com/LambdaGeo/disscube-benchmark"
 repository-code: "https://github.com/LambdaGeo/disscube-benchmark"
