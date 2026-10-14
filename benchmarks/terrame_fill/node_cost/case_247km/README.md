@@ -104,8 +104,6 @@ Node costs differ from the original order by more than 0.01 km in 84,000 to 98,0
 An exact shortest-path solution does not depend on the order of the lines. This agrees with a network built
 and revised incrementally, where the result depends on the order in which lines are added.
 
-See also `../case_minimal/` for a network of 8 lines that reproduces the break.
-
 ## An earlier GPM implementation (aRT 1.9-2, 2014)
 
 `../art_gpm_costs.py` follows the algorithm of `R/gpmFunctions.R` of the R package aRT (read, not run):
@@ -138,15 +136,6 @@ TerraLib 4" (`WasNetworkObjectsDistanceComputed`, `NetworkObjectsDistance`, `Was
   "when the entry point on the network for a given point is the start or end of a line segment".
 * TerraME gpm 0.6 (Lua): `Network`, the version tested here.
 
-## TerraView 3.2.0 (Windows binaries, 2008; no sources)
-
-`terralib.dll` exports `TeGraphNetwork` and `TeNetwork` with `minimumPath`, `nearestNetworkPoint`,
-`nearestNodePoint`, `getLineCosts`, `breakLineSet`, and the strategies `TeProxMatrixOpenNetworkStrategy`,
-`TeProxMatrixOpenNetworkStrategy2` and `TeProxMatrixClosedNetworkStrategy`. `plugins/Gpm.dll` uses the first
-and `plugins/CelulasConn.dll` the second. So the original open-network GPM computed the cost with a
-`minimumPath` method of the network class. The algorithm cannot be read from the binaries without a
-disassembly, which we did not do.
-
 ## TerraLib 4.2.2: the original open-network GPM used Dijkstra
 
 Source: github.com/Universefei/Terralib-analysis (a copy of the TerraLib 4.2.2 sources; commit 2fb454a, 24 Mar 2014),
@@ -161,13 +150,3 @@ Source: github.com/Universefei/Terralib-analysis (a copy of the TerraLib 4.2.2 s
   (`breakLineSet`) if it is within `max_net_distance_`, and connects the geometries whose minimum path is
   within the maximum. Its comment: "Compute the minimum path among all these new nodes (entry points)".
 
-## Is it the projection? No (10 Oct 2026)
-
-The 8-line case of `../case_minimal` was transformed and run again in TerraME 2.0.1: translated by (-4.9e6, -9.7e6) m
-(coordinates near zero), translated by (+3e6, +5e6) m, rotated by 37 degrees, and scaled by 0.1, 10, 100 and 1000
-about the origin. The break (V 7.38 km above the cost of J plus the segment, scaled by the factor) appears in all of them,
-and all node costs scale exactly with the factor (also at 1e-3 and 1e-5, tested for the scaling of the costs only).
-The failure does not depend on the origin, orientation or magnitude of the coordinates.
-The roads of the small example `data/roads.shp` of TerraME/gpm have a `.prj` of WGS84 degrees, but their coordinates
-are in metres (about 763,000 E and 9,703,000 N, UTM-like): the file is mislabelled; the connectivity case is in
-SIRGAS 2000 Polyconic (EPSG:5880). The small example gives no break in 40 random orders of its lines.

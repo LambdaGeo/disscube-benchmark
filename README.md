@@ -29,7 +29,7 @@ This benchmark derives each variable with DisSCube **on the same grid** that Ter
 
 Where the two platforms differ **by construction**, the difference is documented and explained (section 5), not hidden by loosening a threshold.
 
-No reference data and no TerraME code is stored here. Goldens are fetched at run time and verified by SHA-256.
+No reference data, input data or TerraME code is stored here. Goldens and input data are fetched at run time from fixed upstream commits and verified by SHA-256 (see [`THIRD_PARTY.md`](THIRD_PARTY.md)).
 
 ---
 
@@ -39,10 +39,10 @@ Every artifact in the chain is versioned, hashed and, where applicable, archived
 
 | Level | Artifact | What it provides | Pinned version | Identifier |
 | --- | --- | --- | --- | --- |
-| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | commit `66bfc70` (`network_cost`, `sum` with `area=true`; PyPI latest is 0.4.0) | release pending |
+| Engine | [`disscube`](https://github.com/DisSModel/disscube) | The software under test | `0.6.0` (PyPI; `network_cost`, `sum` with `area=true`) | DOI [10.5281/zenodo.23365403](https://doi.org/10.5281/zenodo.23365403) |
 | Reference outputs | [`luccme-goldens`](https://github.com/LambdaGeo/luccme-goldens) | TerraME/LuccME results (fill, labs, per-year) and TerraME timing | `v1.1.0` | DOI [10.5281/zenodo.23161342](https://doi.org/10.5281/zenodo.23161342) |
 | Reference generator | [`terrame-docker`](https://github.com/profsergiocosta/terrame-docker) | TerraME 2.0.1 + LuccME 3.1 image used to produce the goldens | `0.4.2` | `sha256:e0f46a7faed8a601c2ca10f3ba0dcebb352b13b8361e40d6580a0a034c21fb2c`; DOI [10.5281/zenodo.23160784](https://doi.org/10.5281/zenodo.23160784) |
-| Benchmark | this repository | Pipelines, comparison specs, metrics engine | `v1.0.2` | DOI [10.5281/zenodo.23163168](https://doi.org/10.5281/zenodo.23163168) |
+| Benchmark | this repository | Pipelines, comparison specs, metrics engine | `v1.1.0` | DOI: assigned at release (v1.0.2: [10.5281/zenodo.23163168](https://doi.org/10.5281/zenodo.23163168)) |
 
 Each `<dataset>.compare.toml` records the URL and SHA-256 of its golden, so a wrong or modified reference file fails before any metric is computed.
 
@@ -77,7 +77,7 @@ For every variable with a non-exact result, the cause of the difference is docum
 
 ## 4. Quantitative parity results
 
-Obtained with DisSCube at commit `66bfc70` against the `luccme-goldens` `v1.1.0` goldens (TerraME 2.0.1, LuccME 3.1, image `terrame-luccme` 0.4.2).
+Obtained with DisSCube 0.6.0 against the `luccme-goldens` `v1.1.0` goldens (TerraME 2.0.1, LuccME 3.1, image `terrame-luccme` 0.4.2).
 The tables are produced by `compare.py` (`make benchmark-all`), and CI publishes them in each job summary. Coverage values are fractions (0–1), as in the goldens.
 
 ### Itaituba (31 × 20 cells, 5 km, EPSG:29191)
@@ -167,7 +167,7 @@ TerraME's per-node costs were exported (`network.netpoints`, `benchmarks/terrame
 
 - **Shortest-path condition.** In an exact solution, two nodes joined by a road segment cannot differ in cost by more than the cost of the segment. DisSCube meets this in all 120,292 segments. In TerraME's `Network` (gpm 0.6, TerraME 2.0.1) 827 or 828 segments (0.69%, tolerance 0.001 km) do not, by up to 247.6 km; all of them are the first or last segment of a line, where two lines meet.
 - **Node costs.** Over the 116,824 nodes present in both graphs, TerraME is higher than DisSCube in most nodes (mean difference −10.0 km, DisSCube minus TerraME) and DisSCube is never higher by more than 1.87 km. Rebuilding the cell costs with the vertex rule from TerraME's own node costs reproduces the golden (mean absolute error 1.14 km), so the cell rule is not what separates the two.
-- **What it does not depend on.** One port alone still gives 494 to 720 segments out of the condition; a network of 8 lines and 1 port reproduces the behaviour (`node_cost/case_minimal/`); translating, rotating or scaling the coordinates of that small network does not remove it.
+- **What it does not depend on.** One port alone still gives 494 to 720 segments out of the condition.
 - **What it depends on.** The order of the lines in the shapefile: reversing it gives 1,286 segments, and four random orders gave 434 to 508. An exact shortest path does not depend on the order. Six identical runs of the same script gave 827 (four times) or 828 (twice), with one node changing by up to 27 km; the cause of that small variation was not investigated.
 - **One traced case.** The largest break (247.6 km) was followed in the code of `Network.lua`: a lower cost that reaches the end of a line along its own chain is not carried across the junction (`validateCircularPrevious`, branch "simple node, previous is a router"). Record: `node_cost/case_247km/`. A local change to that branch repairs the case but raises the count from 827 to 873, so the general mechanism is not established and no correction is proposed here.
 - **Other implementations.** The same graph solved by repeated relaxation until no node improves (the algorithm of the R package `aRT`, reimplemented in `node_cost/art_gpm_costs.py`) breaks the condition in 0 segments. `lua/Network.lua` of github.com/TerraME/gpm (version 0.6, last commit 6 December 2019) is identical to the file used here.
@@ -203,7 +203,7 @@ Differences below come from how each platform defines the operation, not from er
 Numerical results of spatial operations can depend on library versions (GEOS, GDAL, rasterio, shapely). To keep the comparison stable:
 
 - DisSCube and the goldens are pinned to the versions in section 2.
-- Python dependencies are in `requirements.txt`. DisSCube is pinned to commit `66bfc70`, which adds `network_cost` (needed by `connectivity`; not in PyPI 0.4.0). Replace the pin with the release when available. <!-- TODO: lock file or Dockerfile for the benchmark -->
+- Python dependencies are in `requirements.txt`. DisSCube is pinned to the release 0.6.0 (it replaces the commit `66bfc70` used before the release; the results in section 4 are the same). <!-- TODO: lock file or Dockerfile for the benchmark -->
 - Goldens are downloaded once to `~/.cache/disscube/goldens` and verified by SHA-256 on every run.
 
 <!-- TODO: if report.json does not yet record library versions (disscube, numpy, scipy, rasterio, shapely, GDAL, GEOS), add them, so any difference between machines can be traced. -->
@@ -308,6 +308,7 @@ disscube-benchmark/
 ├── LICENSE
 ├── Makefile                         # validate, run, compare, benchmark, benchmark-all, clean
 ├── README.md
+├── THIRD_PARTY.md                   # Origin, fixed commit and licence of the upstream data
 └── requirements.txt
 ```
 
@@ -325,7 +326,7 @@ Upstream TerraME and LuccME are Copyright (C) 2001–2017 INPE and TerraLAB/UFOP
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Third-party data and code are not redistributed; their origin, commit and licence are in [`THIRD_PARTY.md`](THIRD_PARTY.md).
 
 ---
 
