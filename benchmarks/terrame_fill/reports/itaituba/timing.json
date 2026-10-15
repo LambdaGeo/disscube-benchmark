@@ -1,55 +1,55 @@
 {
   "dataset": "itaituba",
-  "engine": "DisSCube 0.4.0",
+  "engine": "DisSCube 0.6.0",
   "reps": 5,
   "wall_s": {
-    "median": 4.675,
-    "min": 4.207,
-    "max": 5.056
+    "median": 9.694,
+    "min": 6.854,
+    "max": 10.616
   },
-  "max_rss_mb": 281.0,
+  "max_rss_mb": 244.3,
   "runs": [
     {
       "rep": 0,
-      "wall_s": 7.831,
-      "user_s": 2.794,
-      "sys_s": 0.4,
-      "max_rss_mb": 280.7
+      "wall_s": 9.425,
+      "user_s": 3.178,
+      "sys_s": 0.593,
+      "max_rss_mb": 236.1
     },
     {
       "rep": 1,
-      "wall_s": 4.625,
-      "user_s": 2.746,
-      "sys_s": 0.273,
-      "max_rss_mb": 280.7
+      "wall_s": 10.464,
+      "user_s": 3.568,
+      "sys_s": 0.633,
+      "max_rss_mb": 244.2
     },
     {
       "rep": 2,
-      "wall_s": 5.056,
-      "user_s": 2.779,
-      "sys_s": 0.305,
-      "max_rss_mb": 280.7
+      "wall_s": 10.616,
+      "user_s": 3.809,
+      "sys_s": 0.63,
+      "max_rss_mb": 244.2
     },
     {
       "rep": 3,
-      "wall_s": 5.013,
-      "user_s": 2.575,
-      "sys_s": 0.298,
-      "max_rss_mb": 280.7
+      "wall_s": 9.694,
+      "user_s": 3.694,
+      "sys_s": 0.576,
+      "max_rss_mb": 244.2
     },
     {
       "rep": 4,
-      "wall_s": 4.675,
-      "user_s": 2.665,
-      "sys_s": 0.264,
-      "max_rss_mb": 281.0
+      "wall_s": 9.688,
+      "user_s": 3.526,
+      "sys_s": 0.449,
+      "max_rss_mb": 244.2
     },
     {
       "rep": 5,
-      "wall_s": 4.207,
-      "user_s": 2.739,
-      "sys_s": 0.242,
-      "max_rss_mb": 281.0
+      "wall_s": 6.854,
+      "user_s": 2.932,
+      "sys_s": 0.325,
+      "max_rss_mb": 244.3
     }
   ],
   "environment": {
