@@ -25,7 +25,7 @@ variable = "defor_7"
 reference = "defor_7"
 expect = "match"
 max_abs_error = 0.01             # fraction (0.0064 measured)
-note = "coverage; same valid-pixel denominator in both"
+note = "coverage; same valid-pixel denominator. The difference is sampling: TerraME assigns each 60 m pixel to the cell with its centre, DisSCube resamples to 83 x 83 fine pixels per cell"
 
 [[compare]]
 variable = "defor_87"

@@ -32,7 +32,7 @@ reference = "protected"
 tol = 0.01
 min_share = 0.99
 expect = "match"
-note = "area: intersection area / cell area with overlapping polygons counted once; TerraME's `area` is the same quantity"
+note = "area: DisSCube merges overlapping polygons and counts the overlap once; TerraME adds the intersection area of every polygon, so overlaps count more than once (values up to 1.004)"
 
 [[compare]]
 variable = "distroads"
